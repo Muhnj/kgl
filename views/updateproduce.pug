@@ -1,0 +1,116 @@
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title KGL - Manager Dashboard
+    link(rel='stylesheet', href='/css/md.css')
+    script(src='https://cdn.jsdelivr.net/npm/chart.js')
+    script(src='https://unpkg.com/lucide@latest')
+
+  body
+    header
+      .header-left
+        h1
+          span.icon(data-lucide='layout-dashboard')
+          | Manager Dashboard
+      .header-right
+        span#branchName
+        a.button#logoutBtn(href="/logout") Logout
+
+    nav.site-nav
+      ul.nav-menu
+        li
+          a(href='/procurement' class='nav-link active')
+            span.icon(data-lucide="package")
+            | Update Produce
+        li
+          a(href='/sales' class='nav-link')
+            span.icon(data-lucide="dollar-sign")
+            | Record Sale
+        li
+          a(href='/inventory' class='nav-link')
+            span.icon(data-lucide="boxes")
+            | Inventory
+        li
+          a(href='/credit-sales' class='nav-link')
+            span.icon(data-lucide="file-text")
+            | Credit Sales
+
+    main
+      section#procurement.content-section.active
+        h2.section-title
+          span.icon(data-lucide="clipboard-plus")
+          | UPDATE PRODUCE
+
+        //- Ensure 'produces' is passed into this view from the server
+        form#procurementForm(action=`/updateproduce/${produce._id}` method='post' enctype='multipart/form-data')
+          .form-row
+            .form-group
+              label(for='productname') Product Name
+              select#productname.form-select(name='productname' required)
+                option(value='') Select type
+                option(value='beans', selected=produce.productname === 'beans') Beans
+                option(value='maize', selected=produce.productname === 'maize') Grain Maize
+                option(value='cowpeas', selected=produce.productname === 'cowpeas') Cow peas
+                option(value='gnuts', selected=produce.productname === 'gnuts') G-nuts
+                option(value='soybeans', selected=produce.productname === 'soybeans') Soybeans
+              .invalid-feedback Please select a product type
+
+            .form-group
+              label(for='productType') Product Type
+              select#productType.form-select(name='productType')
+                option(value='') Select type
+                option(value='Cereal', selected=produce.productType === 'Cereal') Cereal
+                option(value='Legume', selected=produce.productType === 'Legume') Legume
+                option(value='Grain', selected=produce.productType === 'Grain') Grain
+                option(value='Other', selected=produce.productType === 'Other') Other
+
+          .form-row
+            .form-group
+              label(for='entryDate') Date of Entry
+              input#entryDate(type='date', name='entryDate', value=produce.entryDate)
+
+            .form-group
+              label(for='tonnage') Tonnage (kg)
+              input#tonnage(type='number', name='tonnage', value=produce.tonnage)
+
+          .form-row
+            .form-group
+              label(for='cost') Cost (UGX)
+              input#cost(type='number', name='cost', value=produce.cost)
+
+            .form-group
+              label(for='sellingPrice') Selling Price (UGX)
+              input#sellingPrice(type='number', name='sellingPrice', value=produce.sellingPrice)
+
+          .form-row
+            .form-group
+              label(for='dealerName') Dealer Name
+              input#dealerName(type='text', name='dealerName', value=produce.dealerName)
+
+            .form-group
+              label(for='dealerContact') Dealer Contact
+              input#dealerContact(type='tel', name='dealerContact', value=produce.dealerContact)
+
+          .form-group
+            label(for='branch') Branch
+            select#branch(name='branch')
+              option(value='') Select branch
+              option(value='Maganjo', selected=produce.branch === 'Maganjo') Maganjo
+              option(value='Matugga', selected=produce.branch === 'Matugga') Matugga
+
+          .form-group
+            label(for='productImage') Product Image
+            input#productImage(type='file', name='image')
+            small.text-muted Upload a clear photo of the product (optional)
+
+          .form-group
+            label(for='notes') Additional Notes
+            textarea#notes(rows='2', name='notes')= produce.notes
+
+          button(type='submit') UPDATE PRODUCE
+
+    // Initialize icons
+    script.
+      lucide.createIcons();

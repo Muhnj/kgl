@@ -1,0 +1,122 @@
+
+:root {
+  --sidebar: #2c3e50;
+  --primary: #3498db;
+  --danger: #e74c3c;
+  --warning: #f39c12;
+  --success: #2ecc71;
+  --info: #17a2b8;
+}
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7fa;
+}
+.sidebar {
+  background: var(--sidebar);
+  color: white;
+  height: 100vh;
+  position: fixed;
+  width: 250px;
+  transition: all 0.3s;
+}
+.sidebar .nav-link {
+  color: rgba(255, 255, 255, 0.8);
+  margin: 5px 0;
+  border-radius: 5px;
+  transition: all 0.2s;
+}
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+.sidebar .nav-link i {
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
+}
+.main-content {
+  margin-left: 250px;
+  padding: 20px;
+  transition: all 0.3s;
+}
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+  margin-bottom: 20px;
+}
+.card:hover {
+  transform: translateY(-3px);
+}
+.card-header {
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  background: white;
+  border-radius: 10px 10px 0 0 !important;
+}
+.card.primary { border-left: 4px solid var(--primary); }
+.card.warning { border-left: 4px solid var(--warning); }
+.card.danger { border-left: 4px solid var(--danger); }
+.card.success { border-left: 4px solid var(--success); }
+.card.info { border-left: 4px solid var(--info); }
+.alert-pulse {
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+}
+.product-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+.badge-outline {
+  background: transparent;
+  border: 1px solid;
+}
+.modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.stock-low { background-color: #fff8e1; }
+.stock-critical { background-color: #ffebee; }
+.action-btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+.is-invalid {
+  border-color: #dc3545 !important;
+}
+
+.invalid-feedback {
+  color: #dc3545;
+  display: none;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+}
+
+.is-invalid ~ .invalid-feedback {
+  display: block;
+}
+/* Add these styles to your manager.css */
+.alert {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  animation: slideIn 0.5s forwards, fadeOut 0.5s 4.5s forwards;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}

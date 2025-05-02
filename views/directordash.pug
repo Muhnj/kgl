@@ -1,0 +1,65 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title Director Dashboard - Karibu Groceries
+    link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css' rel='stylesheet')
+    link(href='https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap' rel='stylesheet')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css')
+    link(rel='stylesheet' href='/css/styles.css')
+
+  body
+    .container.mt-5
+      h1.text-center.mb-4 Director Dashboard
+
+      .row.mb-4
+        .col-md-6
+          .card
+            .card-body
+              h5.card-title Total Revenue from Paid Sales
+              table.table
+                tbody
+                  tr
+                    td Total Sales in UGX
+                    td
+                      span#total-sales-amount UGX #{totalSalesFormatted}
+                  tr
+                    td Total Tonnes Sold
+                    td
+                      span#total-quantity #{totalRevenue.totalquantitysold || 0}
+        .col-md-6
+          .card
+            .card-body
+              h5.card-title Pending Credit Sales
+              table.table
+                tbody
+                  tr
+                    td Total Pending Amount
+                    td
+                      span UGX #{pendingSalesFormatted}
+                  tr
+                    td Total Quantity Pending
+                    td
+                      span #{creditSales.totalQuantity || 0}
+
+      .row.mt-4
+        .col-12
+          .card
+            .card-body
+              h5.card-title Branch Sales Overview
+              table.table.table-striped
+                thead
+                  tr
+                    th Branch
+                    th Total Sales (UGX)
+                    th Total Quantity
+                tbody
+                  each sale in branchSales
+                    tr
+                      td #{sale._id}
+                      td UGX #{sale.totalAmount.toLocaleString()}
+                      td #{sale.totalQuantity}
+
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js')
+    script(src='/js/script.js')

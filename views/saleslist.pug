@@ -1,0 +1,86 @@
+extends layout
+block content
+header.card-header
+h4.card-title List of Sales
+br
+nav
+#nav-tab.nav.nav-tabs(role='tablist')
+a#nav-profile-tab.nav-item.nav-link(href='/addSale') Add Produce
+a#nav-profile-tab.nav-item.nav-link(href='/produceList') Produce List
+a#nav-profile-tab.nav-item.nav-link(href='/logout') logout
+#nav-tabContent.tab-content
+br
+table.table.table-bordered
+thead
+tr
+th Produce Name
+th Tonnage Sold
+th Unit Price
+th Amount Paid
+th Buyer Name
+th Seller Name
+th Date Sold
+th Time Sold
+th Update
+th Delete
+tbody
+h2 Sales in Maganjo Branch
+if sales.length
+each sale in sales
+if sale.prodname.stockbranch == "Maganjo"
+tr
+td #{sale.prodname.prodname}
+td #{sale.saletonnage}
+td #{sale.unitsellingprice}
+td #{sale.amountpaid}
+td #{sale.buyername}
+td #{sale.sellername.firstname + ' ' + sale.sellername.lastname}
+td #{moment(sale.date).format('DD-MM-YYYY')}
+td #{sale.time}
+td
+a.btn.btn-primary.btn-block(href='/sales/update/'+sale._id) Update
+td
+form(method="post" action='/sales/delete')
+input(type="hidden", placeholder="", name="id", value=sale._id)
+button.btn.btn-danger.btn-block(type="submit") Delete
+else
+p No Sales in Maganjo Branch yet:-(
+table.table.table-bordered
+thead
+tr
+th Produce Name
+th Tonnage Sold
+th Unit Price
+th Amount Paid
+th Buyer Name
+th Seller Name
+th Date Sold
+th Time Sold
+th Update
+th Delete
+tbody
+h2 Sales in Matugga Branch
+if sales.length
+each sale in sales
+if sale.prodname.stockbranch == "Matugga"
+tr
+td #{sale.prodname ? sale.prodname.prodname : 'Unknown Produce'}
+td #{sale.saletonnage}
+td #{sale.unitsellingprice}
+td #{sale.amountpaid}
+td #{sale.buyername}
+td #{sale.sellername ? sale.sellername.firstname + ' ' + sale.sellername.lastname : 'Unknown Seller'}
+td #{moment(sale.date).format('DD-MM-YYYY')}
+td #{sale.time}
+td
+a.btn.btn-primary.btn-block(href='/sales/update/'+sale._id) Update
+td
+form(method="post" action='/sales/delete')
+input(type="hidden", placeholder="", name="id", value=sale._id)
+button.btn.btn-danger.btn-block(type="submit") Delete
+//- div.form-row
+//- div.col.form-group
+//- a(class='button', href='/agricOfficerDash') Back
+
+block footer
+div.col-md-12 © 2025 Refactory Feb Cohort

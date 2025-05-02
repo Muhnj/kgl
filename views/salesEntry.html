@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KGL - New Sale</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --kgl-primary: #2c5e1a;
+            --kgl-secondary: #f8a617;
+        }
+        
+        .sale-card {
+            border-radius: 0.75rem;
+            border: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--kgl-primary);
+            box-shadow: 0 0 0 0.25rem rgba(44, 94, 26, 0.25);
+        }
+        
+        .btn-kgl {
+            background-color: var(--kgl-primary);
+            color: white;
+        }
+        
+        .btn-kgl:hover {
+            background-color: #1e4212;
+            color: white;
+        }
+        
+        .btn-kgl-outline {
+            border: 1px solid var(--kgl-primary);
+            color: var(--kgl-primary);
+        }
+        
+        .btn-kgl-outline:hover {
+            background-color: rgba(44, 94, 26, 0.1);
+        }
+        
+        .payment-method {
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .payment-method:hover {
+            border-color: rgba(44, 94, 26, 0.2);
+        }
+        
+        .payment-method.active {
+            border-color: var(--kgl-primary);
+            background-color: rgba(44, 94, 26, 0.05);
+        }
+        
+        .product-item {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .product-item:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .product-item.active {
+            background-color: rgba(44, 94, 26, 0.1);
+            border-left: 3px solid var(--kgl-primary);
+        }
+        
+        .receipt {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">New Sale</h2>
+                    <div>
+                        <button class="btn btn-outline-secondary me-2">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </button>
+                        <button class="btn btn-kgl">
+                            <i class="bi bi-save"></i> Save Draft
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Product Selection -->
+            <div class="col-lg-8 mb-4">
+                <div class="card sale-card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Select Products</h5>
+                        
+                        <!-- Search and Filter -->
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                    <input type="text" class="form-control" placeholder="Search products..." id="productSearch">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <select class="form-select" id="branchFilter">
+                                    <option value="">All Branches</option>
+                                    <option value="magajo">Magajo Branch</option>
+                                    <option value="matugga">Matugga Branch</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Product List -->
+                        <div class="row" id="productList">
+                            <div class="col-md-6 mb-3">
+                                <div class="product-item p-3 rounded active">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="mb-1">Beans</h6>
+                                            <small class="text-muted">Magajo Branch</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="d-block fw-bold">1,250 kg</span>
+                                            <small class="text-success">5,000 UGX/kg</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="product-item p-3 rounded">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="mb-1">Grain Maize</h6>
+                                            <small class="text-muted">Matugga Branch</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="d-block fw-bold">980 kg</span>
+                                            <small class="text-success">3,200 UGX/kg</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="product-item p-3 rounded">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="mb-1">Cow peas</h6>
+                                            <small class="text-muted">Magajo Branch</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="d-block fw-bold">42 kg</span>
+                                            <small class="text-danger">Low stock</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="product-item p-3 rounded">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="mb-1">G-nuts</h6>
+                                            <small class="text-muted">Matugga Branch</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="d-block fw-bold">560 kg</span>
+                                            <small class="text-success">6,500 UGX/kg</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="product-item p-3 rounded">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="mb-1">Soybeans</h6>
+                                            <small class="text-muted">Magajo Branch</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="d-block fw-bold">35 kg</span>
+                                            <small class="text-danger">Low stock</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sale Details -->
+            <div class="col-lg-4 mb-4">
+                <div class="card sale-card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Sale Details</h5>
+                        
+                        <!-- Selected Products -->
+                        <div class="mb-4">
+                            <h6 class="mb-3">Selected Products</h6>
+                            <div class="receipt p-3 mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Beans</span>
+                                    <span>5,000 UGX/kg</span>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <button class="btn btn-outline-secondary" type="button">-</button>
+                                    <input type="number" class="form-control text-center" value="100" min="1">
+                                    <button class="btn btn-outline-secondary" type="button">+</button>
+                                    <span class="input-group-text">kg</span>
+                                </div>
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span>Subtotal</span>
+                                    <span>500,000 UGX</span>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-sm btn-outline-secondary w-100">
+                                <i class="bi bi-plus"></i> Add Another Product
+                            </button>
+                        </div>
+                        
+                        <!-- Buyer Information -->
+                        <div class="mb-4">
+                            <h6 class="mb-3">Buyer Information</h6>
+                            <div class="mb-3">
+                                <label for="buyerName" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="buyerName" placeholder="Enter buyer name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="buyerPhone" class="form-label">Phone</label>
+                                <input type="tel" class="form-control" id="buyerPhone" placeholder="Enter phone number">
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Method -->
+                        <div class="mb-4">
+                            <h6 class="mb-3">Payment Method</h6>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="payment-method p-3 rounded text-center active" data-payment="cash">
+                                        <i class="bi bi-cash-coin fs-3 mb-2"></i>
+                                        <p class="mb-0">Cash</p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="payment-method p-3 rounded text-center" data-payment="credit">
+                                        <i class="bi bi-credit-card fs-3 mb-2"></i>
+                                        <p class="mb-0">Credit</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Credit Details (Conditional) -->
+                        <div class="mb-4 d-none" id="creditDetails">
+                            <h6 class="mb-3">Credit Details</h6>
+                            <div class="mb-3">
+                                <label for="nin" class="form-label">National ID (NIN)</label>
+                                <input type="text" class="form-control" id="nin" placeholder="Enter NIN">
+                            </div>
+                            <div class="mb-3">
+                                <label for="dueDate" class="form-label">Due Date</label>
+                                <input type="date" class="form-control" id="dueDate">
+                            </div>
+                        </div>
+                        
+                        <!-- Summary -->
+                        <div class="receipt p-3 mb-4">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Subtotal</span>
+                                <span>500,000 UGX</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Tax</span>
+                                <span>0 UGX</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between fw-bold fs-5">
+                                <span>Total</span>
+                                <span>500,000 UGX</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Complete Sale Button -->
+                        <button class="btn btn-kgl w-100 py-2">
+                            <i class="bi bi-check-circle"></i> Complete Sale
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Payment method selection
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', function() {
+                document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show/hide credit details
+                if (this.dataset.payment === 'credit') {
+                    document.getElementById('creditDetails').classList.remove('d-none');
+                } else {
+                    document.getElementById('creditDetails').classList.add('d-none');
+                }
+            });
+        });
+        
+        // Product selection
+        document.querySelectorAll('.product-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.product-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                // Here you would update the sale details with the selected product
+            });
+        });
+        
+        // Quantity adjustment
+        document.querySelectorAll('.input-group button').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.parentNode.querySelector('input');
+                if (this.textContent === '+') {
+                    input.value = parseInt(input.value) + 1;
+                } else {
+                    if (input.value > 1) {
+                        input.value = parseInt(input.value) - 1;
+                    }
+                }
+                // Here you would update the subtotal                // Update the subtotal when quantity changes
+                updateSubtotal();
+            });
+        });
+
+        // Update quantity input directly
+        document.querySelector('.input-group input').addEventListener('change', function() {
+            if (this.value < 1) this.value = 1;
+            updateSubtotal();
+        });
+
+        // Function to update subtotal
+        function updateSubtotal() {
+            const quantity = parseInt(document.querySelector('.input-group input').value);
+            const pricePerKg = 5000; // This would come from your product data
+            const subtotal = quantity * pricePerKg;
+            
+            document.querySelectorAll('.receipt .fw-bold span').forEach(span => {
+                if (span.textContent.includes('Subtotal')) {
+                    span.textContent = subtotal.toLocaleString('en-US') + ' UGX';
+                }
+                if (span.textContent.includes('Total')) {
+                    span.textContent = subtotal.toLocaleString('en-US') + ' UGX';
+                }
+            });
+        }
+
+        // Form submission
+        document.querySelector('.btn-kgl.w-100').addEventListener('click', function() {
+            const buyerName = document.getElementById('buyerName').value;
+            const buyerPhone = document.getElementById('buyerPhone').value;
+            const paymentMethod = document.querySelector('.payment-method.active').dataset.payment;
+            
+            // Validate required fields
+            if (!buyerName || !buyerPhone) {
+                alert('Please fill in all required buyer information');
+                return;
+            }
+            
+            if (paymentMethod === 'credit') {
+                const nin = document.getElementById('nin').value;
+                const dueDate = document.getElementById('dueDate').value;
+                
+                if (!nin || !dueDate) {
+                    alert('Please fill in all credit details');
+                    return;
+                }
+                
+                // Validate NIN format (simplified)
+                if (!/^[A-Z0-9]{14}$/.test(nin)) {
+                    alert('Please enter a valid National ID (14 alphanumeric characters)');
+                    return;
+                }
+            }
+            
+            // Here you would normally send data to your backend
+            console.log('Sale completed:', {
+                product: 'Beans',
+                quantity: document.querySelector('.input-group input').value,
+                buyerName,
+                buyerPhone,
+                paymentMethod,
+                total: 500000 // This would be calculated
+            });
+            
+            // Success message
+            alert('Sale recorded successfully!');
+            
+            // Optionally reset form or redirect
+            // window.location.href = 'sales.html';
+        });
+
+        // Search functionality
+        document.getElementById('productSearch').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            document.querySelectorAll('.product-item').forEach(item => {
+                const productName = item.querySelector('h6').textContent.toLowerCase();
+                item.style.display = productName.includes(searchTerm) ? 'block' : 'none';
+            });
+        });
+
+        // Branch filter
+        document.getElementById('branchFilter').addEventListener('change', function() {
+            const branch = this.value;
+            document.querySelectorAll('.product-item').forEach(item => {
+                const itemBranch = item.querySelector('small').textContent.toLowerCase();
+                if (!branch || itemBranch.includes(branch)) {
+                    item.parentElement.style.display = 'block';
+                } else {
+                    item.parentElement.style.display = 'none';
+                }
+            });
+        });
+
+        // Initialize date picker for credit sales
+        document.getElementById('dueDate').min = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title= title
+    link(rel='stylesheet', href='/css/md.css')
+    script(src='https://unpkg.com/lucide@latest')
+
+  body
+    .container
+      h2.text-primary
+        span.icon(data-lucide='clipboard-list')
+        | #{title}
+
+      .table-responsive
+        table.table
+          thead
+            tr
+              th Product
+              th Tonnage (kg)
+              th Price/Unit (UGX)
+              th Buyer
+              th Contact
+              th Branch
+              th Agent
+              th Sale Date
+          tbody
+            if sales && sales.length
+              each sale in sales
+                tr
+                  td
+                    if sale.productname
+                      | #{sale.productname.productname || 'Unnamed'}
+                    else
+                      | N/A
+                  td= sale.saletonnage
+                  td= sale.sellingPrice.toLocaleString()
+                  td= sale.buyerName
+                  td= sale.buyerContact
+                  td= sale.branch
+                  td= sale.agentName
+                  td= new Date(sale.saleDate).toLocaleDateString()
+            else
+              tr
+                td(colspan='8') No sales records available.

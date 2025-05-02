@@ -1,0 +1,43 @@
+extends layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h2
+      i.fas.fa-boxes.me-2
+      | Produce Management
+    button.btn.btn-primary(data-bs-toggle="modal" data-bs-target="#produceModal")
+      i.fas.fa-plus.me-1
+      | Add Produce
+
+  .card
+    .card-body
+      .table-responsive
+        table.table.table-hover
+          thead.table-light
+            tr
+              th Product
+              th Type
+              th Quantity
+              th Value
+              th Status
+              th Actions
+          tbody
+            //- Data will be populated dynamically
+            each produce in produces
+              tr(class=produce.status === 'Critical' ? 'stock-critical' : produce.status === 'Low' ? 'stock-low' : '')
+                td
+                  if produce.image
+                    img.product-img.me-2(src=`/uploads/${produce.image}`)
+                  else
+                    img.product-img.me-2(src="https://via.placeholder.com/60")
+                  | #{produce.productname}
+                td #{produce.productType}
+                td #{produce.quantity} kg
+                td UGX #{produce.value.toLocaleString()}
+                td
+                  span.badge(class=produce.status === 'Critical' ? 'bg-danger' : produce.status === 'Low' ? 'bg-warning' : 'bg-success') #{produce.status}
+                td
+                  button.btn.btn-sm.btn-outline-primary.me-1(onclick=`showUpdateProduceModal('${produce._id}')`)
+                    i.fas.fa-edit
+                  button.btn.btn-sm.btn-outline-success
+                    i.fas.fa-cash-register
