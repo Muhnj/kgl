@@ -1,79 +1,122 @@
 doctype html
-html
+html(lang='en')
   head
     meta(charset='UTF-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
-    title Produce List
-    // Bootstrap 5.3.3 CSS via CDN
+    title KGL - Produce Inventory
+    link(rel='stylesheet' href='/css/inventory.css')
+    link(href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' rel='stylesheet')
     link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css')
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css')
     link(rel='stylesheet' href='/css/procdata.css')
+    script(src='https://unpkg.com/lucide@latest')
 
   body
-    .container.mt-5
-      .d-flex.justify-content-between.align-items-center.mb-4
-        h2.text-primary
-          i.fas.fa-apple-alt.me-2
-          | Produce Inventory
-        a.btn.btn-primary(href='/addition')
-          i.fas.fa-plus-circle.me-1
-          | Add New Produce
+    header.header
+      .header-container
+        .branding
+          .logo
+            span.icon(data-lucide='boxes' style='width: 24px; height: 24px')
+          h1 KGL Manager Dashboard
+        .header-controls
+          .branch-selector
+            span.icon(data-lucide='map-pin' style='width: 18px; height: 18px')
+            span#branchName Main Branch
+          a.logout-btn(href="/logout")
+            span.icon(data-lucide='log-out' style='width: 18px; height: 18px')
+            | Sign Out
 
-      .table-responsive
-        table#produceTable.table.table-hover.table-striped.align-middle
-          thead.table-dark
-            tr
-              th Image
-              th Name
-              th Category
-              th Entry Date
-              th Tonnage (kg)
-              th Cost (Ugx)
-              th Price(Ugx)
-              th Supplier
-              th Contact
-              th Branch
-              th Actions
-          tbody
-            if produces.length
-              each produce in produces
-                tr(data-id=produce._id)
-                  td
-                    img.produce-img(src='/' + produce.image, alt=produce.productname)
-                  td.fw-semibold= produce.productname
-                  td
-                    span.badge.badge-category.text-white= produce.productType
-                  td= moment(produce.entryDate).format('DD MMM YYYY')
-                  td= produce.tonnage
-                  td.text-success #{produce.cost.toFixed(2)}
-                  td.text-success #{produce.sellingPrice.toFixed(2)}
-                  td= produce.dealerName
-                  td= produce.dealerContact
-                  td
-                    span.badge.bg-info.text-dark= produce.branch
-                  td
-                    .d-flex.gap-2
-                      a.btn.btn-sm.btn-outline-primary(href='/updateProduce/' + produce._id)
-                        i.fas.fa-edit.me-1
-                        | Edit
-                      a.btn.btn-sm.btn-outline-success(href='/addSale/' + produce._id)
-                        i.fas.fa-dollar-sign.me-1
-                        | Sale
-                      form(action='/deleteProduce', method='post')
-                        input(type='hidden', name='id', value=produce._id)
-                        button.btn.btn-sm.btn-outline-danger(type='submit', onclick='return confirm("Delete this item?")')
-                          i.fas.fa-trash-alt.me-1
-                          | Delete
-            else
+    nav.sidebar
+      .nav-menu
+        a.nav-item(href='/procurement')
+          span.icon(data-lucide='package' style='width: 20px; height: 20px')
+          span.nav-label Procurement
+        a.nav-item(href='/sales')
+          span.icon(data-lucide='dollar-sign' style='width: 20px; height: 20px')
+          span.nav-label Record Sale
+        a.nav-item(href='/ProducesList' class='active')
+          span.icon(data-lucide='boxes' style='width: 20px; height: 20px')
+          span.nav-label Inventory
+        a.nav-item(href='/credit-sales')
+          span.icon(data-lucide='file-text' style='width: 20px; height: 20px')
+          span.nav-label Credit Sales
+        a.nav-item(href='/add-user')
+          span.icon(data-lucide='user-plus' style='width: 20px; height: 20px')
+          span.nav-label Add User
+
+    main.main-content
+      .content-header
+        .header-title
+          h2
+            span.icon(data-lucide='package' style='width: 28px; height: 28px')
+            | Produce Inventory
+        .header-actions
+          a.btn.btn-primary(href='/addition')
+            span.icon(data-lucide='plus-circle')
+            | Add New Produce
+
+      .container-fluid
+        .table-responsive
+          table#produceTable.table.table-hover.table-striped.align-middle
+            thead.table-dark
               tr
-                td.text-center.py-4(colspan='11')
-                  i.fas.fa-box-open.fa-3x.mb-3.text-muted
-                  h5 No Produce Found
-                  p.text-muted Add your first produce item to get started
-                  a.btn.btn-primary.mt-2(href='/addition')
-                    i.fas.fa-plus-circle.me-1
-                    | Add Produce
+                th Image
+                th Name
+                th Category
+                th Entry Date
+                th Tonnage (kg)
+                th Cost (Ugx)
+                th Price(Ugx)
+                th Supplier
+                th Contact
+                th Branch
+                th Actions
+            tbody
+              if produces.length
+                each produce in produces
+                  tr(data-id=produce._id)
+                    td
+                      img.produce-img(src='/' + produce.image, alt=produce.productname)
+                    td.fw-semibold= produce.productname
+                    td
+                      span.badge.badge-category.text-white= produce.productType
+                    td= moment(produce.entryDate).format('DD MMM YYYY')
+                    td= produce.tonnage
+                    td.text-success #{produce.cost.toFixed(2)}
+                    td.text-success #{produce.sellingPrice.toFixed(2)}
+                    td= produce.dealerName
+                    td= produce.dealerContact
+                    td
+                      span.badge.bg-info.text-dark= produce.branch
+                    td
+                      .d-flex.gap-2
+                        a.btn.btn-sm.btn-outline-primary(href='/updateProduce/' + produce._id)
+                          i.fas.fa-edit.me-1
+                          | Edit
+                        a.btn.btn-sm.btn-outline-success(href='/addSale/' + produce._id)
+                          i.fas.fa-dollar-sign.me-1
+                          | Sale
+                        a.btn.btn-sm.btn-outline-warning(href='/addCreditSale/' + produce._id)
+                          span.icon(data-lucide='file-text')
+                          | Credit Sale
+                        form(action='/deleteProduce', method='post')
+                          input(type='hidden', name='id', value=produce._id)
+                          button.btn.btn-sm.btn-outline-danger(type='submit', onclick='return confirm("Delete this item?")')
+                            i.fas.fa-trash-alt.me-1
+                            | Delete
+              else
+                tr
+                  td.text-center.py-4(colspan='11')
+                    i.fas.fa-box-open.fa-3x.mb-3.text-muted
+                    h5 No Produce Found
+                    p.text-muted Add your first produce item to get started
+                    a.btn.btn-primary.mt-2(href='/addition')
+                      i.fas.fa-plus-circle.me-1
+                      | Add Produce
 
-    // JavaScript for dynamic updates
+    script.
+      // Initialize Lucide Icons
+      lucide.createIcons();
+
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js')
-    script(js/procdata.js)
+    script(src='/js/procdata.js')

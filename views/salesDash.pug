@@ -1,98 +1,147 @@
 doctype html
-html
+html(lang='en')
   head
     meta(charset='UTF-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
     title KGL - Sales Dashboard
-    link(rel='stylesheet' href='/css/md.css')
+    link(rel='stylesheet' href='/css/mdd.css')
     script(src='https://cdn.jsdelivr.net/npm/chart.js')
     script(src='https://unpkg.com/lucide@latest')
 
   body
-    header
-      .header-left
-        h1
-          span.icon(data-lucide='layout-dashboard')
-          | Sales Dashboard
-      .header-right
-        span#branchName
-        a.button#logoutBtn(href="/logout") Logout
+    header.header
+      .header-container
+        .branding
+          .logo
+            span.icon(data-lucide='dollar-sign' style='width: 24px; height: 24px')
+          h1 KGL Sales Dashboard
+        .header-controls
+          .branch-selector
+            span.icon(data-lucide='map-pin' style='width: 18px; height: 18px')
+            span#branchName Main Branch
+          a.logout-btn(href="/logout")
+            span.icon(data-lucide='log-out' style='width: 18px; height: 18px')
+            | Sign Out
 
-    nav.site-nav
-      ul.nav-menu
-        li
-          a(href='/procurement' class='nav-link')
-            span.icon(data-lucide="package")
-            | Procurement
-        li
-          a(href='/sales' class='nav-link active')
-            span.icon(data-lucide="dollar-sign")
-            | Record Sale
-        li
-          a(href='/ProducesList' class='nav-link')
-            span.icon(data-lucide="boxes")
-            | Inventory
-        li
-          a(href='/credit-sales' class='nav-link')
-            span.icon(data-lucide="file-text")
-            | Credit Sales
-        li
-          a(href='/add-user' class='nav-link')
-            span.icon(data-lucide='user-plus')
-            | Add User
+    nav.sidebar
+      .nav-menu
+        a.nav-item(href='/procurement')
+          span.icon(data-lucide='package' style='width: 20px; height: 20px')
+          span.nav-label Procurement
+        a.nav-item(href='/sales' class='active')
+          span.icon(data-lucide='dollar-sign' style='width: 20px; height: 20px')
+          span.nav-label Record Sale
+        a.nav-item(href='/ProducesList')
+          span.icon(data-lucide='boxes' style='width: 20px; height: 20px')
+          span.nav-label Inventory
+        a.nav-item(href='/credit-sales')
+          span.icon(data-lucide='file-text' style='width: 20px; height: 20px')
+          span.nav-label Credit Sales
+        a.nav-item(href='/add-user')
+          span.icon(data-lucide='user-plus' style='width: 20px; height: 20px')
+          span.nav-label Add User
 
-    main
-      section#sales.content-section.active
-        h2.section-title 
-          span.icon(data-lucide="shopping-cart")
+    main.main-content
+      .content-header
+        h2.section-title
+          span.icon(data-lucide='shopping-cart' style='width: 28px; height: 28px')
           | Record New Sale
 
+      .form-card
         if produce
           form#salesForm(action=`/addSale/${produce._id}` method='post' onsubmit='return validateSalesForm()')
-            .form-row
+            .form-grid
+              //- Product Selection
               .form-group
-                label(for='productname') Product Sold
+                label.form-label(for='productname') Product Sold
                 select#productname.form-select(name='productname')
-                  option(value=produce._id) #{produce.productname}
-                span.error#productnameError
+                  option(value=produce._id selected)= produce.productname
+                span.error-msg#productnameError
 
+              //- Tonnage Input
               .form-group
-                label(for='tonnage') Tonnage (kg)
-                input#tonnage(type='number' name='saletonnage')
-                span.error#tonnageError
+                label.form-label(for='tonnage') Tonnage (kg) *
+                input#tonnage.form-input(
+                  type='number'
+                  name='saletonnage'
+                  min='0.01'
+                  step='0.01'
+                  
+                )
+                span.error-msg#tonnageError
 
-            .form-row
+              //- Sale Date
               .form-group
-                label(for='saleDate') Date of Sale
-                input#saleDate(type='date' name='saleDate' value=today)
-                span.error#saleDateError
+                label.form-label(for='saleDate') Date of Sale *
+                input#saleDate.form-input(
+                  type='date'
+                  name='saleDate'
+                  value=today
+                  
+                )
+                span.error-msg#saleDateError
 
+              //- Price Display
               .form-group
-                label(for='sellingPrice') Selling Price (UGX per kg)
-                input#sellingPrice(type='number' name='sellingPrice' value=produce.sellingPrice readonly)
+                label.form-label(for='sellingPrice') Price (UGX/kg)
+                input#sellingPrice.form-input(
+                  type='number'
+                  name='sellingPrice'
+                  value=produce.sellingPrice
+                  readonly
+                )
 
-            .form-row
+              //- Buyer Information
               .form-group
-                label(for='buyerName') Buyer Name
-                input#buyerName(type='text' name='buyerName')
-                span.error#buyerNameError
+                label.form-label(for='buyerName') Buyer Name *
+                input#buyerName.form-input(
+                  type='text'
+                  name='buyerName'
+                  pattern='[A-Za-z ]+'
+                  
+                )
+                span.error-msg#buyerNameError
 
+              //- Buyer Contact
               .form-group
-                label(for='buyerContact') Buyer Contact
-                input#buyerContact(type='tel' name='buyerContact')
-                span.error#buyerContactError
+                label.form-label(for='buyerContact') Buyer Contact *
+                input#buyerContact.form-input(
+                  type='tel'
+                  name='buyerContact'
+                  pattern='[0-9]{10,15}'
+                  
+                )
+                span.error-msg#buyerContactError
 
-            .form-group
-              label(for='branch') Branch :
-              br
-              input#branch(type='text' name='branch' value=branch readonly)
-              span.error#branchError
+              //- Branch Information
+              .form-group
+                label.form-label(for='branch') Branch *
+                input#branch.form-input(
+                  type='text'
+                  name='branch'
+                  value=branch
+                  readonly
+                  
+                )
+                span.error-msg#branchError
 
-            .form-group
-              label(for='agentname') Agent Name
-              input#agentname(type='text' value=username name='agentName')
-              span.error#agentNameError
+              //- Agent Information
+              .form-group
+                label.form-label(for='agentname') Agent Name *
+                input#agentname.form-input(
+                  type='text'
+                  name='agentName'
+                  value=username
+                  readonly
+                  
+                )
+                span.error-msg#agentNameError
 
-            button(type='submit') Record Sale
+            .form-actions
+              button.btn.btn-primary(type='submit')
+                span.icon(data-lucide='save')
+                | Record Sale
 
+    script.
+      lucide.createIcons();
     script(src='/js/sales.js')

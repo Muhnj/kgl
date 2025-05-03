@@ -1,133 +1,139 @@
 doctype html
-html
+html(lang='en')
   head
     meta(charset='UTF-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
     title KGL - Manager Dashboard
-    link(rel='stylesheet' href='/css/md.css')
+    link(rel='stylesheet' href='/css/mdd.css')
+    link(href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' rel='stylesheet')
     script(src='https://cdn.jsdelivr.net/npm/chart.js')
     script(src='https://unpkg.com/lucide@latest')
 
   body
-    header
-      .header-left
-        h1
-          span.icon(data-lucide='layout-dashboard')
-          | Manager Dashboard
-      .header-right
-        span#branchName
-        a.button#logoutBtn(href="/logout") Logout
+    header.header
+      .header-container
+        .branding
+          .logo
+            span.icon(data-lucide='warehouse' style='width: 24px; height: 24px')
+          h1 KGL Manager Dashboard
+        .header-controls
+          .branch-selector
+            span.icon(data-lucide='map-pin' style='width: 18px; height: 18px')
+            span#branchName Main Branch
+          a.logout-btn(href="/logout")
+            span.icon(data-lucide='log-out' style='width: 18px; height: 18px')
+            | Sign Out
 
-    nav.site-nav
-      ul.nav-menu
-        li
-          a(href='/procurement' class='nav-link active')
-            span.icon(data-lucide="package")
-            | Procurement
-        li
-          a(href='/sales' class='nav-link')
-            span.icon(data-lucide="dollar-sign")
-            | Record Sale
-        li
-          a(href='/ProducesList' class='nav-link')
-            span.icon(data-lucide="boxes")
-            | Inventory
-        li
-          a(href='/credit-sales' class='nav-link')
-            span.icon(data-lucide="file-text")
-            | Credit Sales
-        li 
-          a(href='/add-user' class='nav-link')
-            span.icon(data-lucide='user-plus')
-            | Add User
+    nav.sidebar
+      .nav-menu
+        a.nav-item(href='/procurement' class='active')
+          span.icon(data-lucide='package' style='width: 20px; height: 20px')
+          span.nav-label Procurement
+        a.nav-item(href='/sales')
+          span.icon(data-lucide='dollar-sign' style='width: 20px; height: 20px')
+          span.nav-label Record Sale
+        a.nav-item(href='/ProducesList')
+          span.icon(data-lucide='boxes' style='width: 20px; height: 20px')
+          span.nav-label Inventory
+        a.nav-item(href='/credit-sales')
+          span.icon(data-lucide='file-text' style='width: 20px; height: 20px')
+          span.nav-label Credit Sales
+        a.nav-item(href='/add-user')
+          span.icon(data-lucide='user-plus' style='width: 20px; height: 20px')
+          span.nav-label Add User
 
-    main
-      // Procurement Section
-      section#procurement.content-section.active
-        h2.section-title 
-          span.icon(data-lucide="clipboard-plus")
-          | Record New Produce
-        form#procurementForm(onsubmit="return formValidate()" action='/addition' method='post' enctype='multipart/form-data')
-          .form-row
+    main.main-content
+      .content-header
+        .header-title
+          h2
+            span.icon(data-lucide='clipboard-list' style='width: 28px; height: 28px')
+            | New Procurement
+        .header-actions
+          button.btn.btn-secondary(type='button')
+            span.icon(data-lucide='clock')
+            | View History
+
+      .form-card
+        form#procurementForm.procurement-form(action='/addition' method='post' onsubmit='return formValidate()' enctype='multipart/form-data')
+          .form-grid
             .form-group
-              label(for='productname') Product Name
-              select#productname.form-select(name='productname' )
-                option(value='') Select type
+              label.form-label(for='productname') Product Name
+              select#productname.form-select(name='productname')
+                option(value='') Select product
                 option(value='beans') Beans
                 option(value='maize') Grain Maize
                 option(value='cowpeas') Cow peas
                 option(value='gnuts') G-nuts
                 option(value='soybeans') Soybeans
-              span#productnameError.invalid-feedback
+              span.error-msg#productnameError
+
             .form-group
-              label(for='productType') Product Type
+              label.form-label(for='productType') Product Type
               select#productType.form-select(name='productType')
                 option(value='') Select type
                 option(value='Cereal') Cereal
                 option(value='Legume') Legume
                 option(value='Grain') Grain
                 option(value='Other') Other
-              span#productTypeError.invalid-feedback
+              span.error-msg#productTypeError
 
-          .form-row
             .form-group
-              label(for='entryDate') Date of Entry
-              input#entryDate(type='date' name='entryDate')
-              span#entryDateError.invalid-feedback
+              label.form-label(for='entryDate') Date of Entry
+              input#entryDate.form-input(type='date' name='entryDate')
+              span.error-msg#entryDateError
+
             .form-group
-              label(for='tonnage') Tonnage (kg)
-              input#tonnage(type='number' name='tonnage')
-              span#tonnageError.invalid-feedback
+              label.form-label(for='tonnage') Tonnage (kg)
+              input#tonnage.form-input(type='number' name='tonnage' min='1')
+              span.error-msg#tonnageError
 
-          .form-row
             .form-group
-              label(for='cost') Cost (UGX)
-              input#cost(type='number' name='cost')
-              span#costError.invalid-feedback
+              label.form-label(for='cost') Cost (UGX)
+              input#cost.form-input(type='number' name='cost' min='1')
+              span.error-msg#costError
+
             .form-group
-              label(for='sellingPrice') Selling Price (UGX)
-              input#sellingPrice(type='number' name='sellingPrice')
-              span#sellingPriceError.invalid-feedback
+              label.form-label(for='sellingPrice') Selling Price (UGX)
+              input#sellingPrice.form-input(type='number' name='sellingPrice' min='1')
+              span.error-msg#sellingPriceError
 
-          .form-row
             .form-group
-              label(for='dealerName') Dealer Name
-              input#dealerName(type='text' name='dealerName')
-              span#dealerNameError.invalid-feedback
+              label.form-label(for='dealerName') Dealer Name
+              input#dealerName.form-input(type='text' name='dealerName')
+              span.error-msg#dealerNameError
+
             .form-group
-              label(for='dealerContact') Dealer Contact
-              input#dealerContact(type='tel' name='dealerContact')
-              span#dealerContactError.invalid-feedback
+              label.form-label(for='dealerContact') Dealer Contact
+              input#dealerContact.form-input(type='tel' name='dealerContact' pattern='(\+?256|0)[7]\d{8}')
+              span.error-msg#dealerContactError
 
-          .form-group
-            label(for='branch') Branch
-            select#branch(name='branch')
-              option(value='') Select branch
-              option(value='Maganjo') Maganjo
-              option(value='Matugga') Matugga
-            span#branchError.invalid-feedback
+            .form-group.span-2
+              label.form-label(for='branch') Branch
+              select#branch.form-select(name='branch')
+                option(value='') Select branch
+                option(value='Maganjo') Maganjo
+                option(value='Matugga') Matugga
+              span.error-msg#branchError
 
-          .form-group
-            label(for='productImage') Product Image
-            input#productImage(type='file' name='image')
-            small.text-muted Upload a clear photo of the product (optional)
-            span#productImageError.invalid-feedback
+            .form-group.span-2
+              label.form-label(for='productImage') Product Image
+              .file-upload
+                input#productImage(type='file' name='image' accept='image/png, image/jpeg')
+                label.upload-preview(for='productImage')
+                  span.icon(data-lucide='upload')
+                  span Upload Image
+              small.form-note Allowed formats: JPG, PNG (max 2MB)
+              span.error-msg#productImageError
 
-          .form-group
-            label(for='notes') Additional Notes
-            textarea#notes(rows='2' name='notes')
-            span#notesError.invalid-feedback
+            .form-group.span-2
+              label.form-label(for='notes') Additional Notes
+              textarea#notes.form-textarea(rows='3' name='notes')
+              span.error-msg#notesError
 
-          button(type='submit') Add Produce
+          .form-actions
+            button.btn.btn-primary(type='submit')
+              span.icon(data-lucide='plus-circle')
+              | Add Produce  
 
-      // Chart Section
-      section.chart-section
-        h3.section-title
-          span.icon(data-lucide='bar-chart-3')
-          | Monthly Procurement Overview
-        .chart-container
-          canvas#procurementChart(width="400" height="200")
-
-    // Init Lucide and Chart
-    script(src="/js/product.js")
-    
+        script(src='/js/product.js')      
+        

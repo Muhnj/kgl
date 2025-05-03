@@ -70,5 +70,9 @@ router.get('/manager-dashboard', connectEnsureLogin.ensureLoggedIn(), async (req
     res.status(500).render('error', { message: "Failed to load dashboard data" });
   }
 });
+router.get("/adduser", (req, res) => {
+  res.render("adduser");
+});
+
 
 module.exports = router;

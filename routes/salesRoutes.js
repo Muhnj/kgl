@@ -90,35 +90,60 @@ router.get(
   connectEnsureLogin.ensureLoggedIn(),
   async (req, res) => {
     try {
+      const userBranch = req.user.branch;
+      const username = req.user.username;
+
       let items = await Sale.find()
         .sort({ $natural: -1 })
-        .populate("productname"); // .populate("sellername", "firstname lastname")
-      const maganjoSales = items.filter(
-        (sale) => sale.productname?.stockbranch === "Maganjo"
+        .populate("productname"); // Still OK if productname is a ref to Produce
+
+      // Filter sales based on logged-in user's branch and name
+      const filteredSales = items.filter(
+        (sale) =>
+          sale.branch === userBranch &&
+          sale.agentName === username
       );
-      console.log("items in sales for maganjo", maganjoSales);
+
+      console.log(`Filtered sales for ${username} at ${userBranch}:`, filteredSales);
+
       res.render("list_sales", {
         title: "Sales list",
-        sales: items,
+        sales: filteredSales,
       });
     } catch (err) {
+      console.error(err);
       res.status(400).send("Unable to find items in the database");
     }
   }
 );
-// router.get("/makesale", (req, res) => {
-//   res.render("salesproducedata");
-// });
-router.get("/makesale", async (req, res) => {
+
+
+//   this where a sales agent can make a sale
+router.get("/makesale", connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
   try {
-    const items = await Produce.find().sort({ $natural: -1 });
+    const items = await Produce.find({ branch: req.user.branch })
+                         .sort({ createdAt: -1 }); // Proper sorting
+
     res.render("salesproducedata", {
       produces: items,
+      formatNumber: (num) => num?.toLocaleString() || "0" // Helper for formatting
     });
   } catch (error) {
-    res.status(400).send("unable to find items in the db");
+    console.error("List produces error:", error);
+    res.status(400).render("error", { message: "Failed to load produce list" });
   }
 });
+
+// router.get("/makesale", async (req, res) => {
+//   try {
+//     const items = await Produce.find().sort({ $natural: -1 });
+//     res.render("salesproducedata", {
+//       produces: items,
+//     });
+//   } catch (error) {
+//     res.status(400).send("unable to find items in the db");
+//   }
+// });
 // Route to display the credit sale page with available products
 // Route to list all products available for credit sales
 
@@ -226,7 +251,7 @@ router.post("/addCreditSale/:id", connectEnsureLogin.ensureLoggedIn(), async (re
     produce.tonnage -= saleTons;
     await produce.save();
 
-    res.redirect("/creditsale");
+    res.redirect("/credit-sales");
 
   } catch (error) {
     console.error("Error saving credit sale:", error);

@@ -52,6 +52,52 @@ router.post("/signingup", async (req, res) => {
     res.status(400).render("signup");
   }
 });
+//these are the routes which will help Director to register users in our system
+router.post("/register", async (req, res) => {
+  try {
+    const { email, role, branch, username, password, confirmPassword } = req.body;
+
+    // Check if user already exists
+    const existingUser = await Signup.findOne({ email });
+    if (existingUser) {
+      return res.status(400).send("Not registered, email already in use");
+    }
+
+    // Basic server-side validation
+    if (!email || !role || !username || !password) {
+      return res.status(400).send("All required fields must be filled");
+    }
+
+    // Validate branch only if not Director
+    if (role !== "Director" && (!branch || branch.trim() === "")) {
+      return res.status(400).send("Branch is required for this role");
+    }
+
+    // Optional: Validate password confirmation
+    if (password !== confirmPassword) {
+      return res.status(400).send("Passwords do not match");
+    }
+
+    // Prepare user object (conditionally include branch)
+    const userData = { email, role, username };
+    if (branch) userData.branch = branch;
+
+    const newUser = new Signup(userData);
+
+    await Signup.register(newUser, password, (error) => {
+      if (error) {
+        throw error;
+      }
+      res.redirect("/adduser");
+    });
+
+    console.log("User registered:", newUser);
+  } catch (error) {
+    console.error("Signup error:", error);
+    res.status(400).render("adduser");
+  }
+});
+
 
 
 //login
@@ -66,7 +112,7 @@ router.post(
     console.log(req.body);
     req.session.user = req.user;
     if (req.user.role === "Manager") {
-      res.redirect("/addition");
+      res.redirect("/ProducesList");
     } else if (req.user.role === "Director") {
       res.redirect("/directordash");
     } else if (req.user.role === "SalesAgent") {
@@ -88,7 +134,7 @@ router.get("/logout", (req, res) => {
 router.get("/userlist", async (req, res) => {
   try {
     const user = await Signup.find().sort({ $natural: -1 });
-    res.render("userlist", {
+    res.render("userlists", {
       signups: user,
     });
   } catch (error) {
