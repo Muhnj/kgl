@@ -133,6 +133,84 @@ router.get("/makesale", connectEnsureLogin.ensureLoggedIn(), async (req, res) =>
     res.status(400).render("error", { message: "Failed to load produce list" });
   }
 });
+router.get("/print-sale/:id", connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+  try {
+    const sale = await Sale.findById(req.params.id).populate('productname');
+    
+    if (!sale) {
+      return res.status(404).render("error", { message: "Sale record not found" });
+    }
+
+    res.render("print-sale", { sale, user: req.user });
+  } catch (error) {
+    console.error("Print sale receipt error:", error);
+    res.status(500).render("error", { message: "Failed to generate sale receipt" });
+  }
+});
+// DELETE /sales/:id
+router.post('/sales/delete/:id', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+  const user = req.user;
+
+  if (user.role !== "Manager") {
+    return res.status(403).send("Access denied: You are not allowed to perform this action.");
+  }
+
+  try {
+    const saleId = req.params.id;
+    
+    const deletedSale = await Sale.findByIdAndDelete(saleId);
+    
+    if (!deletedSale) {
+      return res.status(404).render('error', { message: 'Sale not found' });
+    }
+
+    res.redirect('/salesList');
+  } catch (error) {
+    console.error('Error deleting sale:', error);
+    res.status(500).render('error', { message: 'Failed to delete sale' });
+  }
+});
+router.get('/sales/edit/:id', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+  try {
+    const sale = await Sale.findById(req.params.id).populate('productname');
+    if (!sale) {
+      return res.status(404).render('error', { message: 'Sale not found' });
+    }
+
+    res.render('edit_sale', {
+      title: 'Edit Sale',
+      sale
+    });
+  } catch (err) {
+    console.error("Edit GET error:", err);
+    res.status(500).render("error", { message: "Failed to load sale for editing" });
+  }
+});router.post('/sales/edit/:id', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+  try {
+    const { saletonnage, sellingPrice, buyerName, buyerContact } = req.body;
+
+    const updatedSale = await Sale.findByIdAndUpdate(
+      req.params.id,
+      {
+        saletonnage,
+        sellingPrice,
+        buyerName,
+        buyerContact
+      },
+      { new: true }
+    );
+
+    if (!updatedSale) {
+      return res.status(404).render('error', { message: 'Sale not found for update' });
+    }
+
+    res.redirect('/salesList');
+  } catch (err) {
+    console.error("Edit POST error:", err);
+    res.status(500).render("error", { message: "Failed to update sale" });
+  }
+});
+
 
 // router.get("/makesale", async (req, res) => {
 //   try {
@@ -274,12 +352,27 @@ router.get('/credit-sales', async (req, res) => {
 // Route to mark a credit sale as paid
 router.post('/credit-sales/:id/mark-paid', async (req, res) => {
   try {
+    // Step 1: Update the credit sale status
     const creditSale = await CreditSale.findByIdAndUpdate(
       req.params.id,
       { status: 'paid' },
       { new: true }
     );
-    res.redirect('/credit-sales'); // Redirect to the credit sales list after updating the status
+
+    if (!creditSale) {
+      return res.status(404).send('Credit sale not found');
+    }
+
+    // Step 2: Update the related sale (if exists)
+    if (creditSale.saleId) {
+      await Sale.findByIdAndUpdate(
+        creditSale.saleId,
+        { isPaid: true }, // or e.g. paymentStatus: 'paid'
+        { new: true }
+      );
+    }
+
+    res.redirect('/credit-sales');
   } catch (err) {
     console.error('Error marking as paid:', err);
     res.status(500).send('Failed to update sale status');

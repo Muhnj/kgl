@@ -57,7 +57,7 @@ router.post("/register", async (req, res) => {
   try {
     const { email, role, branch, username, password, confirmPassword } = req.body;
 
-    // Check if user already exists
+    // Checks if user already exists
     const existingUser = await Signup.findOne({ email });
     if (existingUser) {
       return res.status(400).send("Not registered, email already in use");
@@ -112,11 +112,11 @@ router.post(
     console.log(req.body);
     req.session.user = req.user;
     if (req.user.role === "Manager") {
-      res.redirect("/ProducesList");
+      res.redirect("/manager-dashboard");
     } else if (req.user.role === "Director") {
       res.redirect("/directordash");
     } else if (req.user.role === "SalesAgent") {
-      res.redirect("/makesale");
+      res.redirect("/agent-dashboard");
     }
   }
 );
@@ -131,6 +131,8 @@ router.get("/logout", (req, res) => {
     });
   }
 });
+
+//routes to get all users in the system.
 router.get("/userlist", async (req, res) => {
   try {
     const user = await Signup.find().sort({ $natural: -1 });

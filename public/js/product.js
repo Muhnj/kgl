@@ -110,3 +110,42 @@ function formValidate() {
     return false;  // Prevent form submission if invalid
   }
 }
+document.addEventListener('DOMContentLoaded', () => {
+  const dealerSelect = document.getElementById('dealerName');
+  const customDealerGroup = document.getElementById('customDealerGroup');
+  const customDealerInput = document.getElementById('customDealer');
+
+  dealerSelect.addEventListener('change', () => {
+    if (dealerSelect.value === 'Other') {
+      customDealerGroup.style.display = 'block';
+      customDealerInput.setAttribute('required', 'required');
+    } else {
+      customDealerGroup.style.display = 'none';
+      customDealerInput.removeAttribute('required');
+      customDealerInput.value = '';
+    }
+  });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const now = new Date();
+  const offset = now.getTimezoneOffset();
+  const localDateTime = new Date(now.getTime() - offset * 60000).toISOString().slice(0, 16);
+  document.getElementById('entryDate').value = localDateTime;
+
+  const productTypeMap = {
+    beans: 'Legume',
+    maize: 'Cereal',
+    cowpeas: 'Legume',
+    gnuts: 'Legume',
+    soybeans: 'Legume'
+  };
+
+  const productSelect = document.getElementById('productname');
+  const typeSelect = document.getElementById('productType');
+
+  productSelect.addEventListener('change', () => {
+    const selected = productSelect.value;
+    typeSelect.value = productTypeMap[selected] || '';
+  });
+});

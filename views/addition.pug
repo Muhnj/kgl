@@ -19,7 +19,7 @@ html(lang='en')
         .header-controls
           .branch-selector
             span.icon(data-lucide='map-pin' style='width: 18px; height: 18px')
-            span#branchName Main Branch
+            span#branchName= branch
           a.logout-btn(href="/logout")
             span.icon(data-lucide='log-out' style='width: 18px; height: 18px')
             | Sign Out
@@ -54,7 +54,12 @@ html(lang='en')
             | View History
 
       .form-card
-        form#procurementForm.procurement-form(action='/addition' method='post' onsubmit='return formValidate()' enctype='multipart/form-data')
+        form#procurementForm.procurement-form(
+          action='/addition',
+          method='post',
+          onsubmit='return formValidate()',
+          enctype='multipart/form-data'
+        )
           .form-grid
             .form-group
               label.form-label(for='productname') Product Name
@@ -79,13 +84,18 @@ html(lang='en')
 
             .form-group
               label.form-label(for='entryDate') Date of Entry
-              input#entryDate.form-input(type='date' name='entryDate')
+              input#entryDate.form-input(type='datetime-local' name='entryDate')
               span.error-msg#entryDateError
 
             .form-group
               label.form-label(for='tonnage') Tonnage (kg)
               input#tonnage.form-input(type='number' name='tonnage' min='1')
               span.error-msg#tonnageError
+
+            .form-group
+              label.form-label(for='threshold') Threshold (kg)
+              input#threshold.form-input(type='number' name='threshold' min='1' value='100')
+              span.error-msg#thresholdError
 
             .form-group
               label.form-label(for='cost') Cost (UGX)
@@ -98,9 +108,20 @@ html(lang='en')
               span.error-msg#sellingPriceError
 
             .form-group
-              label.form-label(for='dealerName') Dealer Name
-              input#dealerName.form-input(type='text' name='dealerName')
+              label.form-label(for='dealerName') Dealer Source
+              select#dealerName.form-select(name='dealerName')
+                option(value='') Select dealer source
+                option(value='Maganjo Farm') Maganjo Farm
+                option(value='Matugga Farm') Matugga Farm
+                option(value='Individual Farmer') Individual Farmer (≥1000kg)
+                option(value='Company Supplier') Company Supplier
+                option(value='Other') Other (Specify)
               span.error-msg#dealerNameError
+
+            .form-group#customDealerGroup(style='display: none;')
+              label.form-label(for='customDealer') Specify Dealer Name
+              input#customDealer.form-input(type='text' name='customDealer')
+              span.error-msg#customDealerError
 
             .form-group
               label.form-label(for='dealerContact') Dealer Contact
@@ -109,11 +130,15 @@ html(lang='en')
 
             .form-group.span-2
               label.form-label(for='branch') Branch
-              select#branch.form-select(name='branch')
-                option(value='') Select branch
-                option(value='Maganjo') Maganjo
-                option(value='Matugga') Matugga
+              select#branch.form-select(name='branch' disabled)
+                option(value=branch selected)= branch
+              input(type='hidden' name='branch' value=branch)
               span.error-msg#branchError
+
+            .form-group
+              label.form-label(for='agentName') Agent Name
+              input#agentName.form-input(type='text' name='agentName' value=username readonly)
+              span.error-msg#agentNameError
 
             .form-group.span-2
               label.form-label(for='productImage') Product Image
@@ -133,7 +158,10 @@ html(lang='en')
           .form-actions
             button.btn.btn-primary(type='submit')
               span.icon(data-lucide='plus-circle')
-              | Add Produce  
+              | Add Produce
 
-        script(src='/js/product.js')      
-        
+    script(src='/js/product.js')
+    script.
+      lucide.createIcons();
+
+    

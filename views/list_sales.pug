@@ -15,12 +15,12 @@ html(lang='en')
         .branding
           .logo
             span.icon(data-lucide='warehouse' style='width: 24px; height: 24px')
-          h1 KGL Manager Dashboard
+          h1 KGL DASHBOARD
         .header-controls
           .branch-selector
             span.icon(data-lucide='map-pin' style='width: 18px; height: 18px')
             span#branchName Main Branch
-          a.logout-btn(href="/logout")
+          a.logout-btn(href='/logout')
             span.icon(data-lucide='log-out' style='width: 18px; height: 18px')
             | Sign Out
 
@@ -77,12 +77,21 @@ html(lang='en')
                   td= sale.agentName
                   td= new Date(sale.saleDate).toLocaleDateString()
                   td.d-flex.justify-content-start.gap-2
-                    button.btn.btn-sm.btn-outline-primary(onclick=`updateSale('${sale._id}')`)
+                    // Update
+                    a.btn.btn-sm.btn-outline-primary(href=`/sales/edit/${sale._id}`)
                       span.icon(data-lucide='edit')
                       | Update
-                    button.btn.btn-sm.btn-outline-danger(onclick=`deleteSale('${sale._id}')`)
-                      span.icon(data-lucide='trash-2')
-                      | Delete
+
+                    // Print
+                    a.btn.btn-sm.btn-outline-secondary(href=`/print-sale/${sale._id}`, target='_blank')
+                      span.icon(data-lucide='printer')
+                      | Print
+
+                    // Delete
+                    form(method='POST', action=`/sales/delete/${sale._id}`, onsubmit='return confirm("Are you sure you want to delete this sale?");')
+                      button.btn.btn-sm.btn-outline-danger(type='submit')
+                        span.icon(data-lucide='trash-2')
+                        | Delete
             else
               tr
                 td(colspan='9').text-center.py-4
@@ -92,17 +101,5 @@ html(lang='en')
 
     script.
       lucide.createIcons();
-
-      function updateSale(saleId) {
-        console.log('Updating sale:', saleId);
-        // Add update logic here
-      }
-
-      function deleteSale(saleId) {
-        if(confirm('Are you sure you want to delete this sale?')) {
-          console.log('Deleting sale:', saleId);
-          // Add delete logic here
-        }
-      }
 
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js')

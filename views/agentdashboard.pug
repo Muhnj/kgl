@@ -1,0 +1,98 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title= title
+    link(rel="stylesheet", href="/css/mdd.css")
+    link(rel="preconnect", href="https://fonts.googleapis.com")
+    link(rel="preconnect", href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap", rel="stylesheet")
+  body
+    //- Header
+    .header
+      .header-container
+        .branding
+         
+          h1 Sales Dashboard
+        .header-controls
+          .branch-selector Branch: #{agent.branch}
+          a.logout-btn(href="/logout") 
+            svg(xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="currentColor")
+              path(d="M10 17l5-5-5-5v10z")
+            | Logout
+
+    //- Sidebar
+    .sidebar
+      nav.nav-menu
+        a.nav-item.active(href="/agent-dashboard")
+          svg(xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="currentColor")
+            path(d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 0h14V7H7v2zm0 4h14v-2H7v2zm0 4h14v-2H7v2z")
+          span.nav-label Dashboard
+        a.nav-item(href="/salesList")
+          svg(xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="currentColor")
+            path(d="M12 4C7.03 4 2.73 7.11 1 11.5c1.73 4.39 6.03 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.11 16.97 4 12 4zm0 13c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z")
+          span.nav-label Sales Summary
+        a.nav-item(href="/procurement")
+          svg(xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="currentColor")
+            path(d="M19 3H5c-1.1 0-2 .9-2 2v14l4-4h12c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z")
+          span.nav-label Procurement
+
+    //- Main Content
+    .main-content
+      .content-header
+        h2
+          svg(xmlns="http://www.w3.org/2000/svg" height="28" viewBox="0 0 24 24" fill="currentColor")
+            path(d="M3 13h2v-2H3v2zm4 0h2v-2H7v2zm4 0h8v-2h-8v2z")
+          | Agent Overview
+
+      //- Analytics Section
+      .analytics-container
+        .stats-card
+          svg(xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="28" viewBox="0 0 24 24")
+            path(d="M12 2a10 10 0 100 20 10 10 0 000-20zM7 12l5-5v10l-5-5z")
+          h3 #{dailyTonnage.toFixed(2)} T
+          p Total Tonnage
+
+        .stats-card
+          svg(xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="28" viewBox="0 0 24 24")
+            path(d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z")
+          h3 Ugx #{dailyTotal.toLocaleString()}
+          p Daily Revenue
+
+        .stats-card
+          svg(xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="28" viewBox="0 0 24 24")
+            path(d="M16 6V4H8v2H2v2h2v12h16V8h2V6h-6zM6 18V8h12v10H6z")
+          h3 #{dailyCount}
+          p Transactions Today
+
+      //- Sales Table
+      .form-card
+        h3 Today's Sales
+        if sales.length
+          table(style="width:100%; margin-top: 1rem; border-collapse: collapse;")
+            thead
+              tr
+                th(style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #ccc") Produce
+                th(style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #ccc") Tonnage (T)
+                th(style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #ccc") Price (Ksh)
+                th(style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #ccc") Date
+            tbody
+              each s in sales
+                tr
+                  td(style="padding: 0.5rem;") #{s.productName}
+                  td(style="padding: 0.5rem;") #{s.saletonnage}
+                  td(style="padding: 0.5rem;") #{s.sellingPrice}
+                  td(style="padding: 0.5rem;") #{s.saleDate.toDateString()}
+        else
+          p No sales recorded yet today.
+
+      //- Produce Dropdown
+      .form-card
+        h3 Available Produce (#{produces.length})
+        if produces.length
+          ul
+            each p in produces
+              li #{p.productname} - #{p.quantity} T available
+        else
+          p No produce available in your branch.

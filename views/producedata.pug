@@ -31,7 +31,7 @@ html(lang='en')
         a.nav-item(href='/procurement')
           span.icon(data-lucide='package' style='width: 20px; height: 20px')
           span.nav-label Procurement
-        a.nav-item(href='/sales')
+        a.nav-item(href='/makesale')
           span.icon(data-lucide='dollar-sign' style='width: 20px; height: 20px')
           span.nav-label Record Sale
         a.nav-item(href='/ProducesList' class='active')
@@ -40,7 +40,7 @@ html(lang='en')
         a.nav-item(href='/credit-sales')
           span.icon(data-lucide='file-text' style='width: 20px; height: 20px')
           span.nav-label Credit Sales
-        a.nav-item(href='/add-user')
+        a.nav-item(href='/adduser')
           span.icon(data-lucide='user-plus' style='width: 20px; height: 20px')
           span.nav-label Add User
 
@@ -89,21 +89,16 @@ html(lang='en')
                     td
                       span.badge.bg-info.text-dark= produce.branch
                     td
-                      .d-flex.gap-2
+                      .d-flex.flex-wrap.gap-2
                         a.btn.btn-sm.btn-outline-primary(href='/updateProduce/' + produce._id)
                           i.fas.fa-edit.me-1
-                          | Edit
-                        a.btn.btn-sm.btn-outline-success(href='/addSale/' + produce._id)
-                          i.fas.fa-dollar-sign.me-1
-                          | Sale
-                        a.btn.btn-sm.btn-outline-warning(href='/addCreditSale/' + produce._id)
-                          span.icon(data-lucide='file-text')
-                          | Credit Sale
-                        form(action='/deleteProduce', method='post')
+                          | Edit                        
+                        form.d-inline(action='/deleteProduce', method='post')
                           input(type='hidden', name='id', value=produce._id)
                           button.btn.btn-sm.btn-outline-danger(type='submit', onclick='return confirm("Delete this item?")')
                             i.fas.fa-trash-alt.me-1
                             | Delete
+
               else
                 tr
                   td.text-center.py-4(colspan='11')

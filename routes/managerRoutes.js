@@ -3,6 +3,7 @@ const router = express.Router();
 const connectEnsureLogin = require('connect-ensure-login');
 const CreditSale = require('../models/CreditSale');
 const Produce = require('../models/Produce');
+const Sale = require('../models/Sale'); // Don't forget to import this
 
 router.get('/manager-dashboard', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
   const user = req.user;
@@ -13,13 +14,22 @@ router.get('/manager-dashboard', connectEnsureLogin.ensureLoggedIn(), async (req
   try {
     const branchFilter = { branch: user.branch };
 
-    // Parallel database queries
-    const [totalProducts, totalCreditSales, lowStockItems, salesAgg, owedAgg, paidAgg] = await Promise.all([
+    // Fetch all needed data in parallel
+    const [
+      totalProducts,
+      totalCreditSales,
+      lowStockItems,
+      salesAgg,
+      owedAgg,
+      paidAgg,
+      allInventory,
+      creditSales
+    ] = await Promise.all([
       Produce.countDocuments(branchFilter),
       CreditSale.countDocuments(branchFilter),
       Produce.find({
-        branch: user.branch,
-        $expr: { $lte: ["$tonnage", "$threshold"] } // Fixed field name
+        ...branchFilter,
+        $expr: { $lte: ["$tonnage", "$threshold"] }
       }),
       CreditSale.aggregate([
         { $match: branchFilter },
@@ -32,37 +42,54 @@ router.get('/manager-dashboard', connectEnsureLogin.ensureLoggedIn(), async (req
       CreditSale.aggregate([
         { $match: { ...branchFilter, status: 'paid' } },
         { $group: { _id: null, total: { $sum: "$totalAmount" } } }
-      ])
+      ]),
+      Produce.find(branchFilter),
+      CreditSale.find(branchFilter).sort({ createdAt: -1 }).limit(10)
     ]);
 
-    // Process low stock items for template
-    const processedLowStock = lowStockItems.map(item => ({
-      name: item.productname,
-      branch: item.branch,
-      quantity: item.tonnage,
-      threshold: item.threshold
-    }));
-
-    // Process financial data
+    // Calculate totals
     const totalAmountOwed = owedAgg[0]?.total || 0;
     const totalAmountPaid = paidAgg[0]?.total || 0;
 
-    // Process sales by branch
-    const salesByBranch = salesAgg.map(branch => ({
-      _id: branch._id,
-      totalSales: branch.totalSales,
-      formattedTotal: new Intl.NumberFormat('en-US').format(branch.totalSales),
-      progress: Math.min((branch.totalSales / 50000000) * 100, 100) // Cap at 100%
+    // Format inventory for display
+    const processedInventory = allInventory.map(item => {
+      let value = item.sellingPrice && item.tonnage
+        ? item.sellingPrice * item.tonnage
+        : 0;
+
+      let status = item.tonnage <= item.threshold
+        ? (item.tonnage === 0 ? 'Critical' : 'Low')
+        : 'Good';
+
+      return {
+        productname: item.productname,
+        productType: item.productType,
+        quantity: item.tonnage,
+        value,
+        status,
+        image: item.image
+      };
+    });
+
+    // Format activities
+    const recentActivities = creditSales.map(cs => ({
+      type: cs.status === 'paid' ? 'Paid Credit' : 'Pending Credit',
+      description: `${cs.productname} to ${cs.buyerName}`,
+      date: cs.createdAt.toLocaleString()
     }));
+
+    // Prepare stats object
+    const branchStats = {
+      inventoryCount: totalProducts,
+      totalSales: totalAmountPaid,
+      pendingCredits: totalCreditSales
+    };
 
     res.render('managerDashboard', {
       user,
-      totalProducts,
-      totalCreditSales,
-      totalAmountOwedFormatted: new Intl.NumberFormat('en-US').format(totalAmountOwed),
-      totalAmountPaidFormatted: new Intl.NumberFormat('en-US').format(totalAmountPaid),
-      salesByBranch,
-      lowStockItems: processedLowStock
+      branchStats,
+      inventory: processedInventory,
+      recentActivities
     });
 
   } catch (err) {
@@ -70,9 +97,5 @@ router.get('/manager-dashboard', connectEnsureLogin.ensureLoggedIn(), async (req
     res.status(500).render('error', { message: "Failed to load dashboard data" });
   }
 });
-router.get("/adduser", (req, res) => {
-  res.render("adduser");
-});
-
 
 module.exports = router;

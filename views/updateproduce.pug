@@ -3,8 +3,9 @@ html(lang='en')
   head
     meta(charset='UTF-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
-    title KGL - Update Produce
-    link(rel='stylesheet' href='/css/product.css')
+    title KGL - Manager Dashboard - Update Produce
+    link(rel='stylesheet' href='/css/mdd.css')
+    link(href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' rel='stylesheet')
     script(src='https://cdn.jsdelivr.net/npm/chart.js')
     script(src='https://unpkg.com/lucide@latest')
 
@@ -13,12 +14,12 @@ html(lang='en')
       .header-container
         .branding
           .logo
-            span.icon(data-lucide='layout-dashboard' style='width: 24px; height: 24px')
+            span.icon(data-lucide='warehouse' style='width: 24px; height: 24px')
           h1 KGL Manager Dashboard
         .header-controls
           .branch-selector
             span.icon(data-lucide='map-pin' style='width: 18px; height: 18px')
-            span#branchName Main Branch
+            span#branchName= branch
           a.logout-btn(href="/logout")
             span.icon(data-lucide='log-out' style='width: 18px; height: 18px')
             | Sign Out
@@ -27,36 +28,49 @@ html(lang='en')
       .nav-menu
         a.nav-item(href='/procurement' class='active')
           span.icon(data-lucide='package' style='width: 20px; height: 20px')
-          span.nav-label Update Produce
-        a.nav-item(href='/sales')
+          span.nav-label Procurement
+        a.nav-item(href='/makesale')
           span.icon(data-lucide='dollar-sign' style='width: 20px; height: 20px')
           span.nav-label Record Sale
-        a.nav-item(href='/inventory')
+        a.nav-item(href='/ProducesList')
           span.icon(data-lucide='boxes' style='width: 20px; height: 20px')
           span.nav-label Inventory
         a.nav-item(href='/credit-sales')
           span.icon(data-lucide='file-text' style='width: 20px; height: 20px')
           span.nav-label Credit Sales
+        a.nav-item(href='/adduser')
+          span.icon(data-lucide='user-plus' style='width: 20px; height: 20px')
+          span.nav-label Add User
 
     main.main-content
       .content-header
-        h2.section-title
-          span.icon(data-lucide='clipboard-plus')
-          | Update Produce
+        .header-title
+          h2
+            span.icon(data-lucide='clipboard-list' style='width: 28px; height: 28px')
+            | Update Produce
+        .header-actions
+          button.btn.btn-secondary(type='button')
+            span.icon(data-lucide='clock')
+            | View History
 
       .form-card
-        form#procurementForm(action=`/updateproduce/${produce._id}` method='post' enctype='multipart/form-data')
+        form#procurementForm.procurement-form(
+          action=`/updateproduce/${produce._id}`,
+          method='post',
+          onsubmit='return formValidate()',
+          enctype='multipart/form-data'
+        )
           .form-grid
             .form-group
               label.form-label(for='productname') Product Name
-              select#productname.form-select(name='productname' required)
-                option(value='') Select type
+              select#productname.form-select(name='productname')
+                option(value='') Select product
                 option(value='beans', selected=produce.productname === 'beans') Beans
                 option(value='maize', selected=produce.productname === 'maize') Grain Maize
                 option(value='cowpeas', selected=produce.productname === 'cowpeas') Cow peas
                 option(value='gnuts', selected=produce.productname === 'gnuts') G-nuts
                 option(value='soybeans', selected=produce.productname === 'soybeans') Soybeans
-              .invalid-feedback Please select a product type
+              span.error-msg#productnameError
 
             .form-group
               label.form-label(for='productType') Product Type
@@ -66,55 +80,85 @@ html(lang='en')
                 option(value='Legume', selected=produce.productType === 'Legume') Legume
                 option(value='Grain', selected=produce.productType === 'Grain') Grain
                 option(value='Other', selected=produce.productType === 'Other') Other
+              span.error-msg#productTypeError
 
             .form-group
               label.form-label(for='entryDate') Date of Entry
-              input#entryDate.form-input(type='date', name='entryDate', value=produce.entryDate)
+              input#entryDate.form-input(type='datetime-local', name='entryDate', value=produce.entryDate)
+              span.error-msg#entryDateError
 
             .form-group
               label.form-label(for='tonnage') Tonnage (kg)
-              input#tonnage.form-input(type='number', name='tonnage', value=produce.tonnage)
+              input#tonnage.form-input(type='number', name='tonnage', min='1', value=produce.tonnage)
+              span.error-msg#tonnageError
+
+            .form-group
+              label.form-label(for='threshold') Threshold (kg)
+              input#threshold.form-input(type='number', name='threshold', min='1', value=produce.threshold)
+              span.error-msg#thresholdError
 
             .form-group
               label.form-label(for='cost') Cost (UGX)
-              input#cost.form-input(type='number', name='cost', value=produce.cost)
+              input#cost.form-input(type='number', name='cost', min='1', value=produce.cost)
+              span.error-msg#costError
 
             .form-group
               label.form-label(for='sellingPrice') Selling Price (UGX)
-              input#sellingPrice.form-input(type='number', name='sellingPrice', value=produce.sellingPrice)
+              input#sellingPrice.form-input(type='number', name='sellingPrice', min='1', value=produce.sellingPrice)
+              span.error-msg#sellingPriceError
 
             .form-group
-              label.form-label(for='dealerName') Dealer Name
-              input#dealerName.form-input(type='text', name='dealerName', value=produce.dealerName)
+              label.form-label(for='dealerName') Dealer Source
+              select#dealerName.form-select(name='dealerName')
+                option(value='') Select dealer source
+                option(value='Maganjo Farm', selected=produce.dealerName === 'Maganjo Farm') Maganjo Farm
+                option(value='Matugga Farm', selected=produce.dealerName === 'Matugga Farm') Matugga Farm
+                option(value='Individual Farmer', selected=produce.dealerName === 'Individual Farmer') Individual Farmer (≥1000kg)
+                option(value='Company Supplier', selected=produce.dealerName === 'Company Supplier') Company Supplier
+                option(value='Other', selected=produce.dealerName === 'Other') Other (Specify)
+              span.error-msg#dealerNameError
+
+            .form-group#customDealerGroup(style='display: none;')
+              label.form-label(for='customDealer') Specify Dealer Name
+              input#customDealer.form-input(type='text', name='customDealer', value=produce.customDealer)
+              span.error-msg#customDealerError
 
             .form-group
               label.form-label(for='dealerContact') Dealer Contact
-              input#dealerContact.form-input(type='tel', name='dealerContact', value=produce.dealerContact)
-
+              input#dealerContact.form-input(type='tel', name='dealerContact', pattern='(\+?256|0)[7]\d{8}', value=produce.dealerContact)
+              span.error-msg#dealerContactError
+            
             .form-group.span-2
               label.form-label(for='branch') Branch
-              select#branch.form-select(name='branch')
-                option(value='') Select branch
-                option(value='Maganjo', selected=produce.branch === 'Maganjo') Maganjo
-                option(value='Matugga', selected=produce.branch === 'Matugga') Matugga
+              select#branch.form-select(name='branch' disabled)
+                option(value=branch selected)= branch
+              input(type='hidden', name='branch', value=branch)
+            
+            .form-group
+              label.form-label(for='agentName') Agent Name
+              input#agentName.form-input(type='text', name='agentName', value=username readonly)
+
 
             .form-group.span-2
               label.form-label(for='productImage') Product Image
               .file-upload
-                input#productImage(type='file', name='image')
-                .upload-preview
+                input#productImage(type='file', name='image', accept='image/png, image/jpeg')
+                label.upload-preview(for='productImage')
                   span.icon(data-lucide='upload')
                   span Upload Image
               small.form-note Allowed formats: JPG, PNG (max 2MB)
+              span.error-msg#productImageError
 
             .form-group.span-2
               label.form-label(for='notes') Additional Notes
-              textarea#notes.form-textarea(rows='2', name='notes')= produce.notes
+              textarea#notes.form-textarea(rows='3', name='notes')= produce.notes
+              span.error-msg#notesError
 
           .form-actions
             button.btn.btn-primary(type='submit')
-              span.icon(data-lucide='save')
+              span.icon(data-lucide='edit')
               | Update Produce
 
+    script(src='/js/product.js')
     script.
       lucide.createIcons();

@@ -1,8 +1,8 @@
 /* Color Variables */
 :root {
-    --primary-green: #2b5e1a;
+    --primary-green: #1a4d2e;
     --secondary-gold: #d1cc6b;
-    --accent-green: #4d6d4a;
+    --accent-green: #1a4d2e;
     --light-bg: #f9f9f7;
     --dark-text: #2a2a2a;
     --white: #ffffff;
@@ -25,7 +25,7 @@
   
   /* Enhanced Navigation Bar */
   .navbar {
-    background-color: rgba(43, 94, 26, 0.95);
+    background-color: #1a4d2e;
     padding: 15px 0;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
     transition: all 0.4s ease;
@@ -34,7 +34,7 @@
   
   .navbar.scrolled {
     padding: 10px 0;
-    background-color: rgba(43, 94, 26, 0.98);
+    background-color: #1a4d2e;
   }
   
   .navbar-brand {

@@ -61,3 +61,21 @@ function validateSalesForm() {
   }
 }
 
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const tonnageInput = document.getElementById('tonnage');
+    const priceInput = document.getElementById('sellingPrice');
+    const totalAmountInput = document.getElementById('totalAmount');
+
+    function updateTotal() {
+      const tonnage = parseFloat(tonnageInput.value) || 0;
+      const price = parseFloat(priceInput.value) || 0;
+      const total = tonnage * price;
+      totalAmountInput.value = total.toLocaleString('en-UG', { style: 'currency', currency: 'UGX', minimumFractionDigits: 0 });
+    }
+
+    tonnageInput.addEventListener('input', updateTotal);
+
+    // Initial calculation
+    updateTotal();
+  });

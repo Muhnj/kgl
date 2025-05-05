@@ -1,0 +1,92 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title KGL - Edit Sale
+    link(rel='stylesheet' href='/css/mdd.css')
+    script(src='https://cdn.jsdelivr.net/npm/chart.js')
+    script(src='https://unpkg.com/lucide@latest')
+
+  body
+    header.header
+      .header-container
+        .branding
+          .logo
+            span.icon(data-lucide='dollar-sign' style='width: 24px; height: 24px')
+          h1 KGL Sales Dashboard
+        .header-controls
+          .branch-selector
+            span.icon(data-lucide='map-pin' style='width: 18px; height: 18px')
+            span#branchName= sale.branch
+          a.logout-btn(href="/logout")
+            span.icon(data-lucide='log-out' style='width: 18px; height: 18px')
+            | Sign Out
+
+    nav.sidebar
+      .nav-menu
+        a.nav-item(href='/procurement')
+          span.icon(data-lucide='package' style='width: 20px; height: 20px')
+          span.nav-label Procurement
+        a.nav-item(href='/sales' class='active')
+          span.icon(data-lucide='dollar-sign' style='width: 20px; height: 20px')
+          span.nav-label Record Sale
+        a.nav-item(href='/ProducesList')
+          span.icon(data-lucide='boxes' style='width: 20px; height: 20px')
+          span.nav-label Inventory
+        a.nav-item(href='/credit-sales')
+          span.icon(data-lucide='file-text' style='width: 20px; height: 20px')
+          span.nav-label Credit Sales
+        a.nav-item(href='/adduser')
+          span.icon(data-lucide='user-plus' style='width: 20px; height: 20px')
+          span.nav-label Add User
+
+    main.main-content
+      .content-header
+        h2.section-title
+          span.icon(data-lucide='edit-3' style='width: 28px; height: 28px')
+          | Edit Sale Record
+
+      .form-card
+        form(action=`/sales/edit/${sale._id}` method='POST')
+          .form-grid
+
+            .form-group
+              label.form-label(for='productname') Product Sold
+              input#productname.form-input(type='text', value=sale.productname.productname, readonly)
+
+            .form-group
+              label.form-label(for='saletonnage') Tonnage (kg) *
+              input#saletonnage.form-input(type='number', name='saletonnage', min='0.01', step='0.01',  value=sale.saletonnage)
+
+            .form-group
+              label.form-label(for='saleDate') Date of Sale *
+              input#saleDate.form-input(type='date', name='saleDate', required, value=(sale.saleDate.toISOString().substring(0,10)))
+
+            .form-group
+              label.form-label(for='sellingPrice') Price (UGX/kg)
+              input#sellingPrice.form-input(type='number', name='sellingPrice', value=sale.sellingPrice, readonly)
+
+            .form-group
+              label.form-label(for='buyerName') Buyer Name *
+              input#buyerName.form-input(type='text', name='buyerName', pattern='[A-Za-z ]+',  value=sale.buyerName)
+
+            .form-group
+              label.form-label(for='buyerContact') Buyer Contact *
+              input#buyerContact.form-input(type='tel', name='buyerContact', pattern='[0-9]{10,15}',  value=sale.buyerContact)
+
+            .form-group
+              label.form-label(for='branch') Branch *
+              input#branch.form-input(type='text', name='branch', value=sale.branch, readonly)
+
+            .form-group
+              label.form-label(for='agentName') Agent Name *
+              input#agentName.form-input(type='text', name='agentName', value=sale.agentName, readonly)
+
+          .form-actions
+            button.btn.btn-primary(type='submit')
+              span.icon(data-lucide='save')
+              | Update Sale
+
+    script.
+      lucide.createIcons();

@@ -1,0 +1,55 @@
+doctype html
+html
+  head
+    title Sale Receipt
+    style
+      | body { font-family: Arial, sans-serif; padding: 30px; }
+      | .receipt { max-width: 600px; margin: auto; border: 1px solid #ccc; padding: 20px; }
+      | .header { text-align: center; font-size: 24px; margin-bottom: 20px; font-weight: bold; }
+      | .line { margin-bottom: 12px; }
+      | .label { font-weight: 600; }
+      | .text-center { text-align: center; }
+    script.
+      window.onload = () => {
+        document.getElementById('printTime').textContent = new Date().toLocaleTimeString();
+        window.print();
+      };
+  body
+    .receipt
+      .header KGL Produce Sale Receipt
+
+      - const productName = sale.productname ? sale.productname.productname : 'Unnamed'
+      - const totalAmount = sale.saletonnage * sale.sellingPrice
+
+      .line
+        span.label Product: 
+        | #{productName}
+      .line
+        span.label Tonnage (kg): 
+        | #{sale.saletonnage}
+      .line
+        span.label Price/Unit: 
+        | UGX #{sale.sellingPrice.toLocaleString()}
+      .line
+        span.label Buyer: 
+        | #{sale.buyerName}
+      .line
+        span.label Contact: 
+        | #{sale.buyerContact}
+      .line
+        span.label Branch: 
+        | #{sale.branch}
+      .line
+        span.label Agent: 
+        | #{sale.agentName}
+      .line
+        span.label Sale Date: 
+        | #{new Date(sale.saleDate).toLocaleDateString()}
+      .line
+        span.label Total Amount: 
+        | UGX #{totalAmount.toLocaleString()}
+
+      hr
+      .line.text-center
+        em Printed by #{user.username} on #{new Date().toLocaleDateString()} at 
+        span#printTime

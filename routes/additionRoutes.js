@@ -10,15 +10,19 @@ const storage = multer.diskStorage({
     cb(null, "public/img/uploads");
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname); // Add timestamp for unique filenames
+    cb(null, Date.now() + "-" + file.originalname); // Adding timestamp for unique filenames
   },
 });
 const upload = multer({ storage });
 
 // Add new produce
 router.get("/addition", connectEnsureLogin.ensureLoggedIn(), (req, res) => {
-  res.render("addition", { branch: req.user.branch });
+  res.render("addition", {
+    branch: req.user.branch,
+    username: req.user.username  // Add this line
+  });
 });
+
 
 router.post("/addition", connectEnsureLogin.ensureLoggedIn(), upload.single("image"), async (req, res) => {
   try {
@@ -64,12 +68,19 @@ router.get("/updateproduce/:id", connectEnsureLogin.ensureLoggedIn(), async (req
   try {
     const produce = await Produce.findOne({
       _id: req.params.id,
-      branch: req.user.branch // Ensure branch match
+      branch: req.user.branch // Ensure the logged-in user only accesses their branch
     });
 
-    if (!produce) return res.status(404).render("error", { message: "Produce not found" });
+    if (!produce) {
+      return res.status(404).render("error", { message: "Produce not found" });
+    }
 
-    res.render("updateproduce", { produce });
+    // Pass user info to the template
+    res.render("updateproduce", {
+      produce,
+      branch: req.user.branch,
+      username: req.user.username
+    });
   } catch (error) {
     console.error("Get update error:", error);
     res.status(400).render("error", { message: "Failed to load update page" });

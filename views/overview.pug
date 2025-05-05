@@ -26,18 +26,16 @@ html(lang='en')
 
     nav.sidebar
       .nav-menu
-        a.nav-item(href='/dashboard')
-          span.icon(data-lucide='layout-dashboard')
-          span.nav-label Dashboard
+        a.nav-item(href='/branches' class='active')
+          span.icon(data-lucide='store')
+          span.nav-label Branch Overview        
         a.nav-item(href='/sales')
           span.icon(data-lucide='dollar-sign')
           span.nav-label Sales
         a.nav-item(href='/credit')
           span.icon(data-lucide='file-text')
           span.nav-label Credit Sales
-        a.nav-item(href='/branches' class='active')
-          span.icon(data-lucide='store')
-          span.nav-label Branch Overview
+        
 
     main.main-content
       .content-header
