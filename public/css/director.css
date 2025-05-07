@@ -18,7 +18,7 @@
       .sidebar {
         width: 220px;
         background-color:#f8f9fa;
-        color:#2d2d2d;
+        color:white;
         position: fixed;
         top: 60px;
         bottom: 0;
@@ -35,7 +35,8 @@
       }
       .nav-item.active, .nav-item:hover {
         background-color:#1a4d2e;
-        border-left: 4px solid #1a4d2e;
+        color:#f8f9fa;
+        border-left: 4px solid white;
       }
       .main-content {
         margin-left: 220px;

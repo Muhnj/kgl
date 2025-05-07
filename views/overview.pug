@@ -26,15 +26,19 @@ html(lang='en')
 
     nav.sidebar
       .nav-menu
-        a.nav-item(href='/branches' class='active')
-          span.icon(data-lucide='store')
-          span.nav-label Branch Overview        
-        a.nav-item(href='/sales')
-          span.icon(data-lucide='dollar-sign')
-          span.nav-label Sales
-        a.nav-item(href='/credit')
-          span.icon(data-lucide='file-text')
-          span.nav-label Credit Sales
+        a.nav-item.active(href='/directorDash')
+          span.icon(data-lucide='layout-dashboard' style='margin-right: 6px')
+          span.nav-label Dashboard
+        a.nav-item(href='/overview')
+          span.icon(data-lucide='store' style='margin-right: 6px')
+          span.nav-label Branch Overview
+        a.nav-item(href='/userlist')
+          span.icon(data-lucide='users' style='margin-right: 6px')
+          span.nav-label Users        
+        a.nav-item(href='/additionuser')
+          span.icon(data-lucide='user-plus' style='width: 20px; height: 20px')
+          span.nav-label Add User
+
         
 
     main.main-content
@@ -50,8 +54,7 @@ html(lang='en')
               .stats-card
                 span.icon(data-lucide='map-pin')
                 h3 #{branch.name}
-                p Sales: UGX #{branch.totalSales.toLocaleString()}
-                p Quantity: #{branch.totalQuantity} kg
+                p Sales: UGX #{branch.totalSales.toLocaleString()}               
 
         .row.mt-4
           .col-12
@@ -63,15 +66,13 @@ html(lang='en')
                 thead
                   tr
                     th Branch
-                    th Total Sales (UGX)
-                    th Total Quantity
+                    th Total Sales (UGX)                    
                     th Number of Orders
                 tbody
                   each b in branchStats
                     tr
                       td #{b.name}
-                      td UGX #{b.totalSales.toLocaleString()}
-                      td #{b.totalQuantity} kg
+                      td UGX #{b.totalSales.toLocaleString()}                      
                       td #{b.orders}
 
     script.

@@ -1,4 +1,3 @@
-doctype html
 html(lang="en")
   head
     meta(charset="UTF-8")
@@ -16,7 +15,7 @@ html(lang="en")
         .branding
           .logo
             span.icon(data-lucide="boxes")
-          h1 Branch Manager Dashboard
+          h1 Manager Dashboard
         .header-controls
           .branch-selector
             span.icon(data-lucide="map-pin")
@@ -31,15 +30,21 @@ html(lang="en")
         a.nav-item.active(href='/manager-dashboard')
           span.icon(data-lucide='layout-dashboard')
           span.nav-label Dashboard
-        a.nav-item(href='/branch-inventory')
+        a.nav-item(href='/ProducesList')
           span.icon(data-lucide='package')
           span.nav-label Inventory
-        a.nav-item(href='/branch-sales')
+        a.nav-item(href='/makesale')
+          span.icon(data-lucide='dollar-sign')
+          span.nav-label Sale
+        a.nav-item(href='/salesList')
           span.icon(data-lucide='dollar-sign')
           span.nav-label Sales
-        a.nav-item(href='/branch-credit-sales')
+        a.nav-item(href='/credit-sales')
           span.icon(data-lucide='file-text')
           span.nav-label Credit Sales
+        a.nav-item(href='/adduser')
+          span.icon(data-lucide='user-plus' style='width: 20px; height: 20px')
+          span.nav-label Add User
 
     // Main content
     main.main-content
@@ -47,6 +52,15 @@ html(lang="en")
         h2
           span.icon(data-lucide='activity')
           | Branch Overview
+
+      // Stock Alert - Display only if lowStockAlert is true
+      if lowStockAlert
+        .alert.alert-danger
+          | Attention: Some products have low or critical stock. Please review the inventory.
+          ul
+            each item in lowStockItems
+              li
+                | #{item.productname} - Only #{item.tonnage} kg left (Threshold: #{item.threshold} kg)
 
       .analytics-container
         .stats-card
@@ -79,12 +93,7 @@ html(lang="en")
           tbody
             each item in inventory
               tr(class=item.status === 'Critical' ? 'trend down' : item.status === 'Low' ? 'trend' : 'trend up')
-                td
-                  if item.image
-                    img.product-img(src=`/uploads/${item.image}`, alt=item.productname)
-                  else
-                    img.product-img(src="https://via.placeholder.com/60", alt="No image")
-                  | #{item.productname}
+                td #{item.productname}
                 td #{item.productType}
                 td #{item.quantity} kg
                 td UGX #{item.value.toLocaleString()}
@@ -113,13 +122,13 @@ html(lang="en")
           | Quick Actions
 
       .quick-actions
-        a.btn.btn-primary(href="/branch-sales/new")
+        a.btn.btn-primary(href="/makesale")
           span.icon(data-lucide="dollar-sign")
           | Record Sale
-        a.btn.btn-secondary(href="/branch-procurement/new")
+        a.btn.btn-secondary(href="/addition")
           span.icon(data-lucide="shopping-cart")
           | Add Procurement
-        a.btn.btn-secondary(href="/branch-credit-sales/new")
+        a.btn.btn-secondary(href="/makesale")
           span.icon(data-lucide="file-plus")
           | Credit Sale Entry
 

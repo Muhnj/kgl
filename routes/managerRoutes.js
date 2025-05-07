@@ -4,7 +4,6 @@ const connectEnsureLogin = require('connect-ensure-login');
 const CreditSale = require('../models/CreditSale');
 const Produce = require('../models/Produce');
 const Sale = require('../models/Sale'); // Don't forget to import this
-
 router.get('/manager-dashboard', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
   const user = req.user;
   if (user.role !== 'Manager') {
@@ -18,7 +17,7 @@ router.get('/manager-dashboard', connectEnsureLogin.ensureLoggedIn(), async (req
     const [
       totalProducts,
       totalCreditSales,
-      lowStockItems,
+      lowStockItems,  // Add lowStockItems here
       salesAgg,
       owedAgg,
       paidAgg,
@@ -29,7 +28,7 @@ router.get('/manager-dashboard', connectEnsureLogin.ensureLoggedIn(), async (req
       CreditSale.countDocuments(branchFilter),
       Produce.find({
         ...branchFilter,
-        $expr: { $lte: ["$tonnage", "$threshold"] }
+        $expr: { $lte: ["$tonnage", "$threshold"] }  // Query to find low stock products
       }),
       CreditSale.aggregate([
         { $match: branchFilter },
@@ -85,17 +84,32 @@ router.get('/manager-dashboard', connectEnsureLogin.ensureLoggedIn(), async (req
       pendingCredits: totalCreditSales
     };
 
+    // Check if low stock items exist
+    const lowStockAlert = lowStockItems.length > 0;
+
+    // Pass data to the view
     res.render('managerDashboard', {
       user,
       branchStats,
       inventory: processedInventory,
-      recentActivities
+      recentActivities,
+      lowStockAlert,  // Pass the alert flag to the template
+      lowStockItems   // Pass the list of low stock items to the template
     });
 
   } catch (err) {
     console.error("Dashboard error:", err);
     res.status(500).render('error', { message: "Failed to load dashboard data" });
   }
+});
+
+
+router.get("/adduser", (req, res) => {
+  const user = req.user;
+    if (user.role !== "Manager") {
+      return res.status(403).send("Access denied");
+    }
+  res.render("adduser");
 });
 
 module.exports = router;

@@ -1,41 +1,48 @@
-// script.js
 document.addEventListener("DOMContentLoaded", function () {
-  // Initialize password toggles
+  // Password toggle functionality
   const togglePasswordButtons = document.querySelectorAll(".toggle-password");
-
+  
   togglePasswordButtons.forEach((button) => {
     button.addEventListener("click", function () {
       const inputGroup = this.closest(".input-group");
       const passwordInput = inputGroup.querySelector("input");
       const icon = this.querySelector("i");
-
+      
       if (!passwordInput || !icon) return;
 
       if (passwordInput.type === "password") {
         passwordInput.type = "text";
-        icon.classList.replace("fa-eye", "fa-eye-slash");
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
       } else {
         passwordInput.type = "password";
-        icon.classList.replace("fa-eye-slash", "fa-eye");
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
       }
     });
   });
-  // Dynamically show/hide branch based on role
-  const branchContainer = document.getElementById("branch-container");
 
-  role.addEventListener("change", function () {
+  // Dynamically show/hide branch based on role
+  const role = document.getElementById("role");
+  const branchContainer = document.getElementById("branch-container");
+  const branch = document.getElementById("branch");
+  const errorBranch = document.getElementById("error-branch");
+
+  if (role) {
+    role.addEventListener("change", function () {
+      if (role.value === "Director") {
+        branchContainer.style.display = "none";
+        branch.classList.remove("is-invalid", "is-valid");
+        errorBranch.textContent = "";
+      } else {
+        branchContainer.style.display = "";
+      }
+    });
+
+    // Trigger it on load in case of pre-filled role
     if (role.value === "Director") {
       branchContainer.style.display = "none";
-      branch.classList.remove("is-invalid", "is-valid");
-      errorBranch.textContent = "";
-    } else {
-      branchContainer.style.display = "";
     }
-  });
-
-  // Trigger it on load in case of pre-filled role
-  if (role.value === "Director") {
-    branchContainer.style.display = "none";
   }
 
   // Password Strength Meter Elements
@@ -43,109 +50,105 @@ document.addEventListener("DOMContentLoaded", function () {
   const strengthText = document.getElementById("password-strength-text");
   const passwordInput = document.getElementById("password");
 
-  // Real-time Password Strength Check
-  passwordInput.addEventListener("input", function (e) {
-    const password = e.target.value;
-    let strength = 0;
-    const requirements = {
-      length: false,
-      lowercase: false,
-      uppercase: false,
-      number: false,
-      special: false,
-    };
+  if (passwordInput && strengthBar && strengthText) {
+    // Real-time Password Strength Check
+    passwordInput.addEventListener("input", function (e) {
+      const password = e.target.value;
+      let strength = 0;
+      const requirements = {
+        length: false,
+        lowercase: false,
+        uppercase: false,
+        number: false,
+        special: false,
+      };
 
-    let strengthDetails = [];
+      let strengthDetails = [];
 
-    // Check requirements
-    if (password.length >= 8) {
-      strength++;
-      requirements.length = true;
-    } else {
-      strengthDetails.push("at least 8 characters");
-    }
+      // Check requirements
+      if (password.length >= 8) {
+        strength++;
+        requirements.length = true;
+      } else {
+        strengthDetails.push("at least 8 characters");
+      }
 
-    if (/[a-z]/.test(password)) {
-      strength++;
-      requirements.lowercase = true;
-    } else {
-      strengthDetails.push("one lowercase letter");
-    }
+      if (/[a-z]/.test(password)) {
+        strength++;
+        requirements.lowercase = true;
+      } else {
+        strengthDetails.push("one lowercase letter");
+      }
 
-    if (/[A-Z]/.test(password)) {
-      strength++;
-      requirements.uppercase = true;
-    } else {
-      strengthDetails.push("one uppercase letter");
-    }
+      if (/[A-Z]/.test(password)) {
+        strength++;
+        requirements.uppercase = true;
+      } else {
+        strengthDetails.push("one uppercase letter");
+      }
 
-    if (/\d/.test(password)) {
-      strength++;
-      requirements.number = true;
-    } else {
-      strengthDetails.push("one number");
-    }
+      if (/\d/.test(password)) {
+        strength++;
+        requirements.number = true;
+      } else {
+        strengthDetails.push("one number");
+      }
 
-    if (/[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-      strength++;
-      requirements.special = true;
-    } else {
-      strengthDetails.push("one special character");
-    }
+      if (/[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+        strength++;
+        requirements.special = true;
+      } else {
+        strengthDetails.push("one special character");
+      }
 
-    // Create strength message
-    let strengthMessage = "";
-    let strengthColor = "";
-    let barWidth = "0%";
+      // Create strength message
+      let strengthMessage = "";
+      let strengthColor = "";
+      let barWidth = "0%";
 
-    switch (strength) {
-      case 0:
-      case 1:
-        barWidth = "20%";
-        strengthColor = "#dc3545";
-        strengthMessage = `Very Weak: Needs ${formatRequirements(
-          strengthDetails
-        )}`;
-        break;
-      case 2:
-        barWidth = "40%";
-        strengthColor = "#ff6b6b";
-        strengthMessage = `Weak: Missing ${formatRequirements(
-          strengthDetails
-        )}`;
-        break;
-      case 3:
-        barWidth = "60%";
-        strengthColor = "#ffc107";
-        strengthMessage = `Medium: Needs ${formatRequirements(
-          strengthDetails
-        )}`;
-        break;
-      case 4:
-        barWidth = "80%";
-        strengthColor = "#4dabf7";
-        strengthMessage = `Strong: Almost there!`;
-        break;
-      case 5:
-        barWidth = "100%";
-        strengthColor = "#40c057";
-        strengthMessage = `Very Strong! Perfect security! 🔒`;
-        break;
-    }
+      switch (strength) {
+        case 0:
+        case 1:
+          barWidth = "20%";
+          strengthColor = "#dc3545";
+          strengthMessage = `Very Weak: Needs ${formatRequirements(strengthDetails)}`;
+          break;
+        case 2:
+          barWidth = "40%";
+          strengthColor = "#ff6b6b";
+          strengthMessage = `Weak: Missing ${formatRequirements(strengthDetails)}`;
+          break;
+        case 3:
+          barWidth = "60%";
+          strengthColor = "#ffc107";
+          strengthMessage = `Medium: Needs ${formatRequirements(strengthDetails)}`;
+          break;
+        case 4:
+          barWidth = "80%";
+          strengthColor = "#4dabf7";
+          strengthMessage = `Strong: Almost there!`;
+          break;
+        case 5:
+          barWidth = "100%";
+          strengthColor = "#40c057";
+          strengthMessage = `Very Strong! Perfect security! 🔒`;
+          break;
+      }
 
-    // Update UI
-    strengthBar.style.width = barWidth;
-    strengthBar.style.backgroundColor = strengthColor;
-    strengthText.style.color = strengthColor;
-    strengthText.innerHTML = `${strengthMessage} ${getStrengthIcon(strength)}`;
+      // Update UI
+      strengthBar.style.width = barWidth;
+      strengthBar.style.backgroundColor = strengthColor;
+      strengthText.style.color = strengthColor;
+      strengthText.innerHTML = `${strengthMessage} ${getStrengthIcon(strength)}`;
 
-    // Clear error when valid
-    if (strength === 5) {
-      e.target.classList.remove("is-invalid");
-      e.target.classList.add("is-valid");
-      document.getElementById("error-password").textContent = "";
-    }
-  });
+      // Clear error when valid
+      if (strength === 5) {
+        e.target.classList.remove("is-invalid");
+        e.target.classList.add("is-valid");
+        document.getElementById("error-password").textContent = "";
+      }
+    });
+  }
 
   // Helper functions
   function formatRequirements(requirements) {
@@ -167,206 +170,6 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     return icons[strength] || "";
   }
-
-  // Add CSS for animations and error messages
-  const style = document.createElement("style");
-  style.textContent = `
-        .error-message {
-            color: #dc3545;
-            font-size: 0.85rem;
-            margin-top: 5px;
-            min-height: 20px;
-            transition: opacity 0.3s ease;
-        }
-        .is-invalid {
-            border-color: #dc3545 !important;
-        }
-        .is-valid {
-            border-color: #28a745 !important;
-        }
-        #password-strength-text {
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        .progress-bar {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-    `;
-  document.head.appendChild(style);
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-  const togglePasswordButtons = document.querySelectorAll(".toggle-password");
-
-  togglePasswordButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      const inputGroup = this.closest(".input-group");
-      const passwordInput = inputGroup.querySelector("input");
-      const icon = this.querySelector("i");
-
-      if (!passwordInput || !icon) return;
-
-      if (passwordInput.type === "password") {
-        passwordInput.type = "text";
-        icon.classList.replace("fa-eye", "fa-eye-slash");
-      } else {
-        passwordInput.type = "password";
-        icon.classList.replace("fa-eye-slash", "fa-eye");
-      }
-    });
-  });
-
-  const strengthBar = document.getElementById("password-strength-bar");
-  const strengthText = document.getElementById("password-strength-text");
-  const passwordInput = document.getElementById("password");
-
-  passwordInput.addEventListener("input", function (e) {
-    const password = e.target.value;
-    let strength = 0;
-    const requirements = {
-      length: false,
-      lowercase: false,
-      uppercase: false,
-      number: false,
-      special: false,
-    };
-
-    let strengthDetails = [];
-
-    if (password.length >= 8) {
-      strength++;
-      requirements.length = true;
-    } else {
-      strengthDetails.push("at least 8 characters");
-    }
-
-    if (/[a-z]/.test(password)) {
-      strength++;
-      requirements.lowercase = true;
-    } else {
-      strengthDetails.push("one lowercase letter");
-    }
-
-    if (/[A-Z]/.test(password)) {
-      strength++;
-      requirements.uppercase = true;
-    } else {
-      strengthDetails.push("one uppercase letter");
-    }
-
-    if (/\d/.test(password)) {
-      strength++;
-      requirements.number = true;
-    } else {
-      strengthDetails.push("one number");
-    }
-
-    if (/[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-      strength++;
-      requirements.special = true;
-    } else {
-      strengthDetails.push("one special character");
-    }
-
-    let strengthMessage = "";
-    let strengthColor = "";
-    let barWidth = "0%";
-
-    switch (strength) {
-      case 0:
-      case 1:
-        barWidth = "20%";
-        strengthColor = "#dc3545";
-        strengthMessage = `Very Weak: Needs ${formatRequirements(
-          strengthDetails
-        )}`;
-        break;
-      case 2:
-        barWidth = "40%";
-        strengthColor = "#ff6b6b";
-        strengthMessage = `Weak: Missing ${formatRequirements(
-          strengthDetails
-        )}`;
-        break;
-      case 3:
-        barWidth = "60%";
-        strengthColor = "#ffc107";
-        strengthMessage = `Medium: Needs ${formatRequirements(
-          strengthDetails
-        )}`;
-        break;
-      case 4:
-        barWidth = "80%";
-        strengthColor = "#4dabf7";
-        strengthMessage = `Strong: Almost there!`;
-        break;
-      case 5:
-        barWidth = "100%";
-        strengthColor = "#40c057";
-        strengthMessage = `Very Strong! Perfect security! 🔒`;
-        break;
-    }
-
-    strengthBar.style.width = barWidth;
-    strengthBar.style.backgroundColor = strengthColor;
-    strengthText.style.color = strengthColor;
-    strengthText.innerHTML = `${strengthMessage} ${getStrengthIcon(strength)}`;
-
-    if (strength === 5) {
-      e.target.classList.remove("is-invalid");
-      e.target.classList.add("is-valid");
-      document.getElementById("error-password").textContent = "";
-    }
-  });
-
-  function formatRequirements(requirements) {
-    if (requirements.length === 0) return "";
-    const lastReq = requirements.pop();
-    return requirements.length > 0
-      ? `${requirements.join(", ")} and ${lastReq}`
-      : lastReq;
-  }
-
-  function getStrengthIcon(strength) {
-    const icons = {
-      0: "😱",
-      1: "😨",
-      2: "😕",
-      3: "🙂",
-      4: "😎",
-      5: "🎉",
-    };
-    return icons[strength] || "";
-  }
-
-  const style = document.createElement("style");
-  style.textContent = `
-        .error-message {
-            color: #dc3545;
-            font-size: 0.85rem;
-            margin-top: 5px;
-            min-height: 20px;
-            transition: opacity 0.3s ease;
-        }
-        .is-invalid {
-            border-color: #dc3545 !important;
-        }
-        .is-valid {
-            border-color: #28a745 !important;
-        }
-        #password-strength-text {
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        .progress-bar {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-    `;
-  document.head.appendChild(style);
 });
 
 function validateForm(event) {
@@ -400,8 +203,7 @@ function validateForm(event) {
 
   let isValid = true;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const strongPasswordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+  const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%^&\*()\-_=+[\]{};':"\\|,.<>/?]).{8,}$/;
   const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
 
   // Role validation
@@ -413,7 +215,7 @@ function validateForm(event) {
     role.classList.add("is-valid");
   }
 
-  // ✅ Updated Branch validation
+  // Branch validation
   if (role.value !== "Director" && !branch.value) {
     errorBranch.textContent = "Please select your branch";
     branch.classList.add("is-invalid");

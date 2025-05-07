@@ -25,10 +25,10 @@ html(lang='en')
 
     nav.sidebar
       .nav-menu
-        a.nav-item(href='/procurement')
+        a.nav-item(href='/ProducesList')
           span.icon(data-lucide='package' style='width: 20px; height: 20px')
           span.nav-label Procurement
-        a.nav-item(href='/sales' class='active')
+        a.nav-item(href='/makesale' class='active')
           span.icon(data-lucide='dollar-sign' style='width: 20px; height: 20px')
           span.nav-label Record Sale
         a.nav-item(href='/ProducesList')
@@ -37,9 +37,6 @@ html(lang='en')
         a.nav-item(href='/credit-sales')
           span.icon(data-lucide='file-text' style='width: 20px; height: 20px')
           span.nav-label Credit Sales
-        a.nav-item(href='/add-user')
-          span.icon(data-lucide='user-plus' style='width: 20px; height: 20px')
-          span.nav-label Add User
 
     main.main-content
       .content-header
@@ -56,7 +53,7 @@ html(lang='en')
                 label.form-label(for='productname') Product Sold
                 select#productname.form-select(name='productname')
                   option(value=produce._id selected)= produce.productname
-                span.error-msg#productnameError
+                span.error-msg.text-danger#productnameError
 
               //- Tonnage Input
               .form-group
@@ -66,20 +63,18 @@ html(lang='en')
                   name='saletonnage'
                   min='0.01'
                   step='0.01'
-                  
                 )
-                span.error-msg#tonnageError
+                span.error-msg.text-danger#tonnageError
 
-              //- Sale Date
+              //- Sale Date and Time
               .form-group
-                label.form-label(for='saleDate') Date of Sale *
+                label.form-label(for='saleDate') Date and Time of Sale *
                 input#saleDate.form-input(
-                  type='date'
+                  type='datetime-local'
                   name='saleDate'
                   value=today
-                  
                 )
-                span.error-msg#saleDateError
+                span.error-msg.text-danger#saleDateError
 
               //- Price Display
               .form-group
@@ -107,9 +102,8 @@ html(lang='en')
                   type='text'
                   name='buyerName'
                   pattern='[A-Za-z ]+'
-                  
                 )
-                span.error-msg#buyerNameError
+                span.error-msg.text-danger#buyerNameError
 
               //- Buyer Contact
               .form-group
@@ -118,9 +112,8 @@ html(lang='en')
                   type='tel'
                   name='buyerContact'
                   pattern='[0-9]{10,15}'
-                  
                 )
-                span.error-msg#buyerContactError
+                span.error-msg.text-danger#buyerContactError
 
               //- Branch Information
               .form-group
@@ -130,9 +123,8 @@ html(lang='en')
                   name='branch'
                   value=branch
                   readonly
-                  
                 )
-                span.error-msg#branchError
+                span.error-msg.text-danger#branchError
 
               //- Agent Information
               .form-group
@@ -142,9 +134,8 @@ html(lang='en')
                   name='agentName'
                   value=username
                   readonly
-                  
                 )
-                span.error-msg#agentNameError
+                span.error-msg.text-danger#agentNameError
 
             .form-actions
               button.btn.btn-primary(type='submit')

@@ -26,7 +26,7 @@ html(lang='en')
 
     nav.sidebar
       .nav-menu
-        a.nav-item(href='/procurement' class='active')
+        a.nav-item(href='/ProducesList' class='active')
           span.icon(data-lucide='package' style='width: 20px; height: 20px')
           span.nav-label Procurement
         a.nav-item(href='/sales')
@@ -38,7 +38,7 @@ html(lang='en')
         a.nav-item(href='/credit-sales')
           span.icon(data-lucide='file-text' style='width: 20px; height: 20px')
           span.nav-label Credit Sales
-        a.nav-item(href='/add-user')
+        a.nav-item(href='/adduser')
           span.icon(data-lucide='user-plus' style='width: 20px; height: 20px')
           span.nav-label Add User
 
@@ -89,7 +89,7 @@ html(lang='en')
 
             .form-group
               label.form-label(for='tonnage') Tonnage (kg)
-              input#tonnage.form-input(type='number' name='tonnage' min='1')
+              input#tonnage.form-input(type='number' name='tonnage' )
               span.error-msg#tonnageError
 
             .form-group

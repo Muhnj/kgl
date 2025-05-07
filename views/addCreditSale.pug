@@ -38,7 +38,6 @@ html(lang='en')
         a.nav-item(href='/credit-sales' class='active')
           span.icon(data-lucide='file-text' style='width: 20px; height: 20px')
           span.nav-label Credit Sales
-        
 
     main.main-content
       .content-header
@@ -48,59 +47,72 @@ html(lang='en')
             | Add Credit Sale - #{produce.productname}
 
       .form-card
-        form(action='/addCreditSale/' + produce._id method='post')
+        form(action='/addCreditSale/' + produce._id method='post' onsubmit='addEventListener("submit", function (e)')
           .form-grid
             .form-group
               label.form-label(for='productname') Product Name
               input.form-control(type='text' name='productname' value=produce.productname readonly)
-            
+              span.text-danger#error-productname
+
             .form-group
               label.form-label(for='saletonnage') Tonnage (kg)
-              input.form-control(type='number' name='saletonnage' required)
-            
+              input.form-control(type='number' name='saletonnage')
+              span.text-danger#error-saletonnage
+
             .form-group
               label.form-label(for='saleDate') Date of Sale
-              input.form-control(type='date' name='saleDate' value=today required)
-            
+              input.form-control(type='date' name='saleDate' value=today)
+              span.text-danger#error-saleDate
+
             .form-group
               label.form-label(for='saleTime') Time of Sale
-              input.form-control(type='time' name='saleTime' required)
-            
+              input.form-control(type='time' name='saleTime')
+              span.text-danger#error-saleTime
+
             .form-group
               label.form-label(for='totalAmount') Total Amount (UGX)
-              input.form-control(type='number' name='totalAmount' required)
-            
+              input.form-control(type='number' name='totalAmount')
+              span.text-danger#error-totalAmount
+
             .form-group
               label.form-label(for='buyerName') Buyer Name
-              input.form-control(type='text' name='buyerName' required)
-            
+              input.form-control(type='text' name='buyerName')
+              span.text-danger#error-buyerName
+
             .form-group
               label.form-label(for='buyerContact') Buyer Contact
-              input.form-control(type='tel' name='buyerContact' required)
-            
+              input.form-control(type='tel' name='buyerContact')
+              span.text-danger#error-buyerContact
+
             .form-group
               label.form-label(for='location') Location
-              input.form-control(type='text' name='location' required)
-            
+              input.form-control(type='text' name='location')
+              span.text-danger#error-location
+
             .form-group
               label.form-label(for='nationalId') National ID
-              input.form-control(type='text' name='nationalId' required)
-            
+              input.form-control(type='text' name='nationalId')
+              span.text-danger#error-nationalId
+
             .form-group
               label.form-label(for='dueDate') Due Date
-              input.form-control(type='date' name='dueDate' required)
-            
+              input.form-control(type='date' name='dueDate')
+              span.text-danger#error-dueDate
+
             .form-group
               label.form-label(for='dispatchDate') Dispatch Date
-              input.form-control(type='date' name='dispatchDate' required)
-            
+              input.form-control(type='date' name='dispatchDate')
+              span.text-danger#error-dispatchDate
+
             .form-group
               label.form-label(for='branch') Branch
               input.form-control(type='text' name='branch' value=branch readonly)
-            
+              span.text-danger#error-branch
+
             .form-group
               label.form-label(for='agentName') Agent Name
               input.form-control(type='text' name='agentName' value=username readonly)
+              span.text-danger#error-agentName
 
           .form-actions
             button.btn.btn-primary(type='submit')
@@ -108,6 +120,6 @@ html(lang='en')
               | Submit Sale
 
     script.
-      // Initialize Lucide Icons
       lucide.createIcons();
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js')
+    script(src='/js/credit-sale-validation.js')

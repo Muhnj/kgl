@@ -61,7 +61,7 @@ html(lang='en')
 
             .form-group
               label.form-label(for='saleDate') Date of Sale *
-              input#saleDate.form-input(type='date', name='saleDate', required, value=(sale.saleDate.toISOString().substring(0,10)))
+              input#saleDate.form-input(type='date', name='saleDate',  value=(sale.saleDate.toISOString().substring(0,10)))
 
             .form-group
               label.form-label(for='sellingPrice') Price (UGX/kg)
@@ -69,11 +69,11 @@ html(lang='en')
 
             .form-group
               label.form-label(for='buyerName') Buyer Name *
-              input#buyerName.form-input(type='text', name='buyerName', pattern='[A-Za-z ]+',  value=sale.buyerName)
+              input#buyerName.form-input(type='text', name='buyerName',   value=sale.buyerName)
 
             .form-group
               label.form-label(for='buyerContact') Buyer Contact *
-              input#buyerContact.form-input(type='tel', name='buyerContact', pattern='[0-9]{10,15}',  value=sale.buyerContact)
+              input#buyerContact.form-input(type='tel', name='buyerContact',   value=sale.buyerContact)
 
             .form-group
               label.form-label(for='branch') Branch *

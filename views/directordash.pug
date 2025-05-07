@@ -15,7 +15,7 @@ html(lang="en")
         h1.h5.mb-0.ms-2 KGL Director Dashboard
       .header-controls.d-flex.align-items-center
         span.icon(data-lucide='globe', style='width: 18px; height: 18px; margin-right: 5px')
-        span#branchName.me-4 National Overview
+        span#branchName.me-4  Overview
         a.logout-btn.text-white.text-decoration-none(href="/logout")
           span.icon(data-lucide='log-out', style='width: 18px; height: 18px; margin-right: 4px')
           | Sign Out
@@ -24,17 +24,18 @@ html(lang="en")
     nav.sidebar
       .nav-menu
         a.nav-item.active(href='/directorDash')
-          span.icon(data-lucide='layout-dashboard', style='margin-right: 6px')
+          span.icon(data-lucide='layout-dashboard' style='margin-right: 6px')
           span.nav-label Dashboard
         a.nav-item(href='/overview')
-          span.icon(data-lucide='store', style='margin-right: 6px')
+          span.icon(data-lucide='store' style='margin-right: 6px')
           span.nav-label Branch Overview
         a.nav-item(href='/userlist')
-          span.icon(data-lucide='users', style='margin-right: 6px')
-          span.nav-label Users
-        a.nav-item(href='/credit')
-          span.icon(data-lucide='file-text', style='margin-right: 6px')
-          span.nav-label Credit Sales
+          span.icon(data-lucide='users' style='margin-right: 6px')
+          span.nav-label Users        
+        a.nav-item(href='/additionuser')
+          span.icon(data-lucide='user-plus' style='width: 20px; height: 20px')
+          span.nav-label Add User
+
 
     // Main Content
     main.main-content
@@ -42,7 +43,7 @@ html(lang="en")
         .d-flex.justify-content-between.align-items-center
           h2.d-flex.align-items-center
             span.icon(data-lucide='layout-dashboard', style='width: 28px; height: 28px; margin-right: 6px')
-            | National Summary
+            | Executive Summary
 
       .row.g-4.mb-4
         .col-md-3
@@ -50,21 +51,13 @@ html(lang="en")
             span.icon(data-lucide='dollar-sign', style='color: green')
             h3 UGX #{totalRevenue.totalsale.toLocaleString()}
             p.text-muted Total Revenue (Paid)
-        .col-md-3
-          .stats-card.shadow-sm.p-3.bg-light.rounded
-            span.icon(data-lucide='box')
-            h3 #{totalRevenue.totalquantitysold || 0} kg
-            p.text-muted Tonnes Sold
+        
         .col-md-3
           .stats-card.shadow-sm.p-3.bg-light.rounded
             span.icon(data-lucide='clock')
             h3 UGX #{creditSales.totalAmount.toLocaleString()}
             p.text-muted Pending Credit Value
-        .col-md-3
-          .stats-card.shadow-sm.p-3.bg-light.rounded
-            span.icon(data-lucide='loader')
-            h3 #{creditSales.totalQuantity || 0} kg
-            p.text-muted Quantity Pending
+        
 
       .card.mt-4
         .card-header.d-flex.justify-content-between.align-items-center
@@ -79,16 +72,13 @@ html(lang="en")
                 tr
                   th Branch
                   th Total Sales (UGX)
-                  th Quantity Sold (kg)
-                  th Orders
+                  
               tbody
                 each sale in branchSales
                   tr
                     td #{sale._id}
                     td UGX #{sale.totalAmount.toLocaleString()}
-                    td #{sale.totalQuantity}
-                    td #{sale.orders || '-'}
-
+                    
       .row.mt-5
         .col-md-6
           .p-3.bg-white.rounded.shadow-sm

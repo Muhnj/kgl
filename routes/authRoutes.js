@@ -53,6 +53,52 @@ router.post("/signingup", async (req, res) => {
   }
 });
 //these are the routes which will help Director to register users in our system
+
+//these are the routes which will help Director to register users in our system
+router.post("/admin", async (req, res) => {
+  try {
+    const { email, role, branch, username, password, confirmPassword } = req.body;
+
+    // Checks if user already exists
+    const existingUser = await Signup.findOne({ email });
+    if (existingUser) {
+      return res.status(400).send("Not registered, email already in use");
+    }
+
+    // Basic server-side validation
+    if (!email || !role || !username || !password) {
+      return res.status(400).send("All required fields must be filled");
+    }
+
+    // Validate branch only if not Director
+    if (role !== "Director" && (!branch || branch.trim() === "")) {
+      return res.status(400).send("Branch is required for this role");
+    }
+
+    // Optional: Validate password confirmation
+    if (password !== confirmPassword) {
+      return res.status(400).send("Passwords do not match");
+    }
+
+    // Prepare user object (conditionally include branch)
+    const userData = { email, role, username };
+    if (branch) userData.branch = branch;
+
+    const newUser = new Signup(userData);
+
+    await Signup.register(newUser, password, (error) => {
+      if (error) {
+        throw error;
+      }
+      res.redirect("/userlist");
+    });
+
+    console.log("User registered:", newUser);
+  } catch (error) {
+    console.error("Signup error:", error);
+    res.status(400).render("admin");
+  }
+});
 router.post("/register", async (req, res) => {
   try {
     const { email, role, branch, username, password, confirmPassword } = req.body;
@@ -88,7 +134,7 @@ router.post("/register", async (req, res) => {
       if (error) {
         throw error;
       }
-      res.redirect("/adduser");
+      res.redirect("/ProducesList");
     });
 
     console.log("User registered:", newUser);
@@ -133,7 +179,7 @@ router.get("/logout", (req, res) => {
 });
 
 //routes to get all users in the system.
-router.get("/userlist", async (req, res) => {
+router.get("/userlist", async (req, res) => {  
   try {
     const user = await Signup.find().sort({ $natural: -1 });
     res.render("userlists", {
@@ -143,5 +189,6 @@ router.get("/userlist", async (req, res) => {
     res.status(400).send("unable to find items in the db");
   }
 });
+
 
 module.exports = router;
