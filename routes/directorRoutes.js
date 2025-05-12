@@ -1,57 +1,57 @@
 const express = require("express");
 const router = express.Router();
 const connectEnsureLogin = require("connect-ensure-login");
-const CreditSale = require("../models/CreditSale");
-const User = require("../models/Signup"); // <- This is the model you're using
+const Sale = require("../models/Sale");
+const User = require('../models/Signup');
 
-// Director's dashboard route
+
 router.get(
   "/directorDash",
   connectEnsureLogin.ensureLoggedIn(),
   async (req, res) => {
     const user = req.user;
+
     if (user.role !== "Director") {
       return res.status(403).send("Access denied");
     }
 
     try {
-      const totalRevenue = await CreditSale.aggregate([
-        { $match: { status: "paid" } },
+      // 1. Total Revenue & Quantity Sold
+      const revenueData = await Sale.aggregate([
         {
           $group: {
             _id: null,
-            totalsale: { $sum: "$totalAmount" },
-            totalquantitysold: { $sum: "$quantity" },
+            totalsale: { $sum: { $multiply: ["$saletonnage", "$sellingPrice"] } },
+            totalquantitysold: { $sum: "$saletonnage" },
           },
         },
       ]);
 
-      const creditSales = await CreditSale.aggregate([
-        { $match: { status: "pending" } },
-        {
-          $group: {
-            _id: null,
-            totalAmount: { $sum: "$totalAmount" },
-            totalQuantity: { $sum: "$quantity" },
-          },
-        },
-      ]);
-
-      const branchSales = await CreditSale.aggregate([
+      // 2. Branch-wise Aggregation
+      const branchSales = await Sale.aggregate([
         {
           $group: {
             _id: "$branch",
-            totalAmount: { $sum: "$totalAmount" },
-            totalQuantity: { $sum: "$quantity" },
+            totalAmount: { $sum: { $multiply: ["$saletonnage", "$sellingPrice"] } },
+            totalQuantity: { $sum: "$saletonnage" },
+            orders: { $sum: 1 },
           },
         },
+        { $sort: { totalAmount: -1 } },
       ]);
 
+      // Placeholder for credit-like info (if later added)
+      const creditSales = {
+        totalAmount: 0,
+        totalQuantity: 0,
+      };
+
       res.render("directordash", {
-        totalRevenue: totalRevenue[0] || { totalsale: 0, totalquantitysold: 0 },
-        creditSales: creditSales[0] || { totalAmount: 0, totalQuantity: 0 },
+        totalRevenue: revenueData[0] || { totalsale: 0, totalquantitysold: 0 },
+        creditSales,
         branchSales,
       });
+
     } catch (err) {
       console.error("Error loading director dashboard:", err);
       res.status(500).send("Failed to load dashboard");
@@ -163,17 +163,5 @@ router.post(
 );
 
 
-// router.get('/userlist', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-//   const user = req.user;
-//   if (user.role !== 'Director') return res.status(403).send('Access denied');
-
-//   try {
-//     const users = await User.find({});
-//     res.render('userlist', { users });
-//   } catch (err) {
-//     console.error('Error fetching users:', err);
-//     res.status(500).send('Internal Server Error');
-//   }
-// });
 
 module.exports = router;

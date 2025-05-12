@@ -52,7 +52,6 @@ router.post("/signingup", async (req, res) => {
     res.status(400).render("signup");
   }
 });
-//these are the routes which will help Director to register users in our system
 
 //these are the routes which will help Director to register users in our system
 router.post("/admin", async (req, res) => {
@@ -177,18 +176,20 @@ router.get("/logout", (req, res) => {
     });
   }
 });
-
-//routes to get all users in the system.
-router.get("/userlist", async (req, res) => {  
+router.get("/userlist", (req, res, next) => {
+  if (!req.isAuthenticated || !req.isAuthenticated()) {
+    return res.redirect("/login");
+  }
+  next();
+}, async (req, res) => {
   try {
     const user = await Signup.find().sort({ $natural: -1 });
-    res.render("userlists", {
-      signups: user,
-    });
+    res.render("userlists", { signups: user });
   } catch (error) {
-    res.status(400).send("unable to find items in the db");
+    res.status(400).send("Unable to find items in the DB");
   }
 });
+
 
 
 module.exports = router;
